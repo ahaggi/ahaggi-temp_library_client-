@@ -1,0 +1,27 @@
+<form class="form" [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value) ">
+    <div class="search-term-type">
+
+        <mat-form-field>
+            <mat-label for="bookId">Book Id..</mat-label>
+            <input id="bookId" matInput type="text" formControlName="bookId">
+        </mat-form-field>
+
+    </div>
+    <button mat-raised-button color="primary" type="submit" [disabled]="!formGroup.valid">Filter</button>
+</form>
+
+<!-- <div class="loading-shade" *ngIf="isLoadingResults">
+    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+  </div> -->
+
+  <ng-template [ngIf]="foundBook" [ngIfElse]="all_the_books">
+    <p><b>id: {{foundBook.id}}, title: {{foundBook.title}}, pages: {{foundBook.pages}}, chapters:{{foundBook.chapters}}</b></p>
+  </ng-template>
+
+<ng-template #all_the_books>
+    <ul > All the books
+        <li *ngFor="let book of books$ | async">
+            id: {{book.id}}, title: {{book.title}}, pages: {{book.pages}}, chapters:{{book.chapters}}
+        </li>
+    </ul>
+</ng-template>
