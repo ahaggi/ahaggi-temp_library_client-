@@ -1,0 +1,57 @@
+<div>
+
+
+    <ng-template class="container" [ngIf]="author" [ngIfElse]="loadingFailed">
+
+        <div class="author-details">
+            <img class="personal-image" [src]="author.imgUri" width="128" height="150">
+            <div>
+                <h2>Personal Info :</h2>
+                <div class="personal-info-field">
+                    <h3>Name : </h3>
+                    <p>{{author.name}}</p>
+                </div>
+                <!-- <some icon >{{available}}  -->
+                <div class="personal-info-field">
+                    <h3>Email: </h3>
+                    <p>{{author.email}}</p>
+                </div>
+
+                <div class="personal-info-field">
+                    <h3>About: </h3>
+                    <p>{{author.about}}</p>
+                </div>
+            </div>
+        </div>
+
+        <mat-accordion>
+            <ng-container *ngTemplateOutlet="booksToAuthors"></ng-container>
+        </mat-accordion>
+
+    </ng-template>
+
+
+
+
+    <ng-template #booksToAuthors>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Books
+                </mat-panel-title>
+                <mat-panel-description>
+                    List of this author's Books
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <app-shared-paginated-cards [payload]="booksCards"></app-shared-paginated-cards>
+        </mat-expansion-panel>
+    </ng-template>
+
+
+
+    <ng-template #loadingFailed>
+        <h3> Loading failure..</h3>
+    </ng-template>
+
+
+</div>

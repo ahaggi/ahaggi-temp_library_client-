@@ -1,0 +1,46 @@
+<mat-card class="container">
+    <ng-container *ngIf="cardDetails.header; then  header">
+    </ng-container>
+    <ng-container *ngIf="cardDetails.content; then content">
+    </ng-container>
+    <ng-container *ngIf="(cardDetails.actionButtons && cardDetails.actionButtons.length > 0); then actionsButtons">
+    </ng-container>
+</mat-card>
+<mat-divider></mat-divider>
+
+
+
+
+
+<ng-template #header>
+    
+    <mat-card-title-group [ngClass]="{'mat-card-title-group-flex-start': cardDetails.header?.avatar }">
+        <img *ngIf="cardDetails.header?.avatar" mat-card-avatar [src]="cardDetails.header?.avatar" style="order: -1;">
+
+        <img *ngIf="cardDetails.header?.img" mat-card-sm-image [src]="cardDetails.header?.img">
+        <mat-card-title style="text-overflow: ellipsis;   overflow: hidden;">
+            <ng-template [ngIf]="(cardDetails.header?.title_routerLink)" [ngIfElse]="justTitle">
+                <a [routerLink]="[cardDetails.header?.title_routerLink]">{{cardDetails.header?.title.substr(0, 40)}}</a>
+            </ng-template>
+            <ng-template #justTitle>
+                {{cardDetails.header?.title}}
+            </ng-template>
+        </mat-card-title>
+        <mat-card-subtitle>{{cardDetails.header?.subtitle}}</mat-card-subtitle>
+    </mat-card-title-group>
+</ng-template>
+
+
+<ng-template #content>
+    <mat-card-content>
+        <p>
+            {{cardDetails.content}}
+        </p>
+    </mat-card-content>
+</ng-template>
+
+<ng-template #actionsButtons>
+    <mat-card-actions>
+        <button mat-button *ngFor="let button of actionsButtons">{{button.viewValue}}</button>
+    </mat-card-actions>
+</ng-template>

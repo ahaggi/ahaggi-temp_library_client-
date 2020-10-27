@@ -1,0 +1,39 @@
+.container{
+    display: flex;
+    flex-direction: row;
+    height: 200px; 
+    margin:  10px 0 20px 0 ;
+
+}
+
+.checkbox-list {
+    display: flex; 
+    flex-direction: column; 
+    overflow-y: auto; 
+    overflow-x: hidden; 
+    height: 145px; 
+    background: rgba(0, 0, 0, 0.04);
+
+}
+
+.checkbox-list mat-checkbox:hover{
+    text-decoration:none;
+    transform: scale(1.2);
+    transform-origin: left;
+    background: rgba(0, 0, 0, 0.103);
+
+}
+
+
+mat-chip-list{
+    overflow-y: auto; 
+    overflow-x: hidden; 
+    width: 100%;
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.04);
+
+
+}
+
+  

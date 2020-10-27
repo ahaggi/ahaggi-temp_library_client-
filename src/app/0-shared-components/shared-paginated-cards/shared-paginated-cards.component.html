@@ -1,0 +1,9 @@
+<div>
+    <mat-form-field>
+        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter By Name Only....">
+    </mat-form-field>
+
+    <app-shared-card *ngFor="let card of obs$ | async" [cardDetails]="card"></app-shared-card>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 50]"></mat-paginator>
+</div>

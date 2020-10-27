@@ -1,0 +1,59 @@
+<div>
+
+
+    <ng-template class="container" [ngIf]="reader" [ngIfElse]="loadingFailed">
+
+        <div class="personal-info-container">
+            <img [src]="reader.imgUri" width="128" height="150">
+            <div>
+                <h2>Personal Info:</h2>
+                <div class="personal-info-field">
+                    <h3>Name : </h3>
+                    <p>{{reader.name}}</p>
+                </div>
+                <div class="personal-info-field">
+                    <h3>Email: </h3>
+                    <p>{{reader.email}}</p>
+                </div>
+            </div>
+
+        </div>
+        <ng-container *ngTemplateOutlet="booksToReaders"></ng-container>
+    </ng-template>
+
+
+    <ng-template #booksToReaders>
+        <h3> Borrowed Books: </h3>
+        <mat-form-field appearance="fill">
+            <mat-label>Sort by:</mat-label>
+            <mat-select>
+                <mat-option *ngFor="let option of booksToReadersOptions; let i = index" [value]="option.value"
+                    (click)="sortBorrowingInfoBy(option.value)" [selected]="i === 0">
+                    {{option.viewValue}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div class="borrowed-books-list">
+            <ol>
+                <li *ngFor="let borrow of reader.booksToReaders  ; let i = index"
+                    [ngClass]="{'returned':!borrow.returned}" [attr.data-index]="i">
+                    <a [routerLink]="['/book', borrow.book.id]">
+                        <span>Book title: {{borrow.book.title}} , </span>
+                    </a>
+                    <span>Borrowed at: {{borrow.borrowDate}} , </span>
+                    <span>Returned at:{{ borrow.returned ? borrow.returnDate : '-'}}</span>
+                </li>
+            </ol>
+        </div>
+
+    </ng-template>
+
+
+
+    <ng-template #loadingFailed>
+        <h3> Loading failure..</h3>
+    </ng-template>
+
+
+</div>

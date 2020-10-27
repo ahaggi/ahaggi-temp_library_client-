@@ -1,0 +1,60 @@
+@media only screen and (max-width: 600px) {
+.sections-container{
+    flex-direction: column;
+}
+
+}
+
+.container{
+    margin: 0 auto ;
+    width: 60vw;
+    min-height: 80vh;
+    height: 100%;
+    padding: 50px 20px;
+    background-color: rgb(255, 255, 255);
+}
+
+.edit-button-container{
+    display: flex;
+    justify-content: end;
+}
+
+.sections-container{
+    display: flex;
+    align-items: center;
+    padding-bottom: 40px;
+ }
+
+ .section-l{
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     width: 20vw;
+ }
+
+.section-r{
+    width: 50vw;
+    height: 100%;
+}
+
+
+.book-details-content{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 20px 0 20px 0;
+
+}
+.book-details-col{
+    display: flex;
+    flex-direction: column;
+}
+
+
+.book-details-field{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    width: 150px;
+}
+ 

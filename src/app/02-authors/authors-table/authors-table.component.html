@@ -1,0 +1,19 @@
+<div class="container">
+  <ng-template [ngIf]="isLoading" [ngIfElse]="showPayload">
+    <mat-spinner></mat-spinner>
+  </ng-template>
+
+
+
+  <ng-template #showPayload>
+
+    <ng-template [ngIf]=" isLoadingFailed" [ngIfElse]="fullTable">
+      <h3> Loading failure..</h3>
+    </ng-template>
+
+    <ng-template #fullTable>
+      <app-shared-table [payload]="payload"></app-shared-table>
+    </ng-template>
+
+  </ng-template>
+</div>

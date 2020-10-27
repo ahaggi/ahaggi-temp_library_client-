@@ -1,0 +1,143 @@
+<ng-template [ngIf]="book" [ngIfElse]="loadingFailed">
+
+
+    <div class="container">
+        <div class="edit-button-container">
+            <button mat-raised-button color="primary" [routerLink]="['/editbook/' , book.id]"> 
+                <mat-icon >edit</mat-icon>
+            </button>
+        </div>
+
+        <div class="sections-container">
+            <div class="section-l">
+                <img [src]="book.imgUri" width="128" height="150">
+                <button mat-raised-button color="primary"  [routerLink]="['']"> 
+                    Issue a borrow <mat-icon > playlist_add_check</mat-icon>
+                </button>
+    
+            </div>
+            <div class="section-r">
+                <h1><b>{{book.title}}</b></h1>
+            </div>
+        </div>
+
+
+        <div class="sections-container">
+
+        <div class="section-l">
+
+        </div>
+
+        <div class="section-r">
+            <h3>Book Details :</h3>
+            <!-- <some icon >{{available}}  -->
+            <div >
+                <p>{{book.description}}</p>
+            </div>
+            <div class="book-details-content">
+                <div class="book-details-col">
+                    <div class="book-details-field">
+                        <p>Pages: </p>
+                        <p><b>{{book.pages}}</b></p>
+                    </div>
+                    <div class="book-details-field">
+                        <p>Chapters: </p>
+                        <p> <b>{{book.chapters}}</b> </p>
+                    </div>
+                    <div class="book-details-field">
+                        <p>Price: </p>
+                        <p><b>{{book.price}}</b></p>
+                    </div>
+
+                </div>
+
+                <div class="book-details-col">
+                    <div class="book-details-field">
+                        <p>Available quantity: </p>
+                        <p><b>{{book.storage.quantity}}</b></p>
+                    </div>
+                    <div class="book-details-field">
+                        <p>BorrowedQuantity: </p>
+                        <p><b>{{book.storage.borrowedQuantity}}</b></p>
+                    </div>
+
+                </div>
+
+
+                
+               
+                
+            </div>
+
+            <mat-accordion>
+                <ng-container *ngTemplateOutlet="booksToAuthors"></ng-container>
+                <ng-container *ngTemplateOutlet="booksToReaders"></ng-container>
+            </mat-accordion>
+
+        </div>
+
+            <!-- 
+                        title
+                        pages
+                        chapters
+                        price
+                        storage{quantity borrowedQuantity}
+                        available
+                        booksToAuthors{id author{id name}}
+                        booksToReaders{ id reader{id name}}
+                     -->
+
+    
+        </div>
+
+
+
+    </div>
+</ng-template>
+<!-- 
+    id
+    title
+    pages
+    chapters
+    price
+    storage{id quantity borrowedQuantity}
+    available
+    booksToAuthors{id author{id name}}
+    booksToReaders{ id reader{id name}} -->
+
+<ng-template #booksToAuthors>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Authors
+            </mat-panel-title>
+            <mat-panel-description>
+                Authors' details
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <app-shared-paginated-cards [payload]="authorsCards"></app-shared-paginated-cards>
+    </mat-expansion-panel>
+</ng-template>
+
+
+
+<ng-template #booksToReaders>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Readers
+            </mat-panel-title>
+            <mat-panel-description>
+                List of readers who borrowed this book
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <!-- <app-shared-card *ngFor="let reader of filteredReaders" [cardDetails]="reader"></app-shared-card> -->
+        <app-shared-paginated-cards [payload]="readersCards"></app-shared-paginated-cards>
+    </mat-expansion-panel>
+</ng-template>
+
+
+
+<ng-template #loadingFailed>
+    <h3> Loading failure..</h3>
+</ng-template>

@@ -1,0 +1,113 @@
+.form-container{
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10%;
+    margin-left: 10%;
+}
+
+.input-feilds-container{
+    margin-left: 20px;
+    display: flex; 
+    flex-direction:column;
+    flex-basis:  50%
+}
+
+
+
+
+
+
+.container{
+
+  display: flex; 
+  flex-direction:column;
+  justify-content:flex-start
+
+}
+
+.personal-info-container{
+  display: flex; 
+  flex-direction:row;
+  justify-content:center
+}
+.personal-info-field{
+  display: flex; 
+  flex-direction:row;
+  align-items:baseline;
+  padding-left: 20px;
+
+}
+
+.personal-info-field p {
+  margin-left: 30px;
+}
+
+
+
+
+
+
+
+
+
+
+
+.borrowed-books-list{
+  width: 700px;
+  max-height: 300px;
+  overflow-y: scroll;
+  overflow-x: visible;
+  }
+    .borrowed-books-list ol{
+  list-style: none;
+  *list-style: decimal;
+  font-size: 15px;
+  font-family: 'Raleway', sans-serif;
+  padding: "10px";
+  margin-bottom: 4em;
+
+  }
+  .borrowed-books-list li{
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  
+  padding: .4em .4em .4em 2em;
+  margin: .5em;
+  background: darkgray;
+  color: #000;
+  text-decoration: none;
+  -moz-border-radius: .3em;
+  -webkit-border-radius: .3em;
+  border-radius: 10em;
+  transition: all .2s ease-in-out;
+  }
+  .borrowed-books-list a {
+    font-size: 1.2em;
+    color: #000;
+
+  }
+  .borrowed-books-list li:hover{
+  background: #d6d4d4;
+  text-decoration:none;
+  transform: scale(1.1);
+  }
+
+
+  .borrowed-books-list .returned {
+    background: rgb(255, 75, 75) ;
+    color: white ;
+}
+.borrowed-books-list .returned  li:hover{
+  background: rgb(255, 125, 125) ;
+  text-decoration:none;
+  transform: scale(1.1);
+  }
+
+
+h3 {
+  font-weight: bold;
+}
