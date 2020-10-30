@@ -1,20 +1,40 @@
+
 .container{
+    margin-bottom: 10px 0 20px 0;
+
+}
+.lists-container{
     display: flex;
     flex-direction: row;
-    height: 200px; 
-    margin:  10px 0 20px 0 ;
+    height: 300px; 
 
 }
 
+.checkbox-list-container{
+    display: flex;
+    flex-direction: column;
+        /* flex: 0 0 30%; */
+    /* width: intrinsic;            Safari/WebKit uses a non-standard name */
+    /* width: -moz-max-content;    Firefox/Gecko */
+    /* width: -webkit-max-content; Chrome */
+    /* width: max-content; */
+
+}
 .checkbox-list {
     display: flex; 
     flex-direction: column; 
     overflow-y: auto; 
     overflow-x: hidden; 
-    height: 145px; 
+    height: 245px; 
     background: rgba(0, 0, 0, 0.04);
-
+    
 }
+
+/* make the rest of space inside .mat-checkbox clickable ,, ::ng-deep is deprecated */
+:host .checkbox-list ::ng-deep .mat-checkbox-layout , :host .checkbox-list ::ng-deep  .mat-checkbox-label  {
+    width: 100%;
+}
+
 
 .checkbox-list mat-checkbox:hover{
     text-decoration:none;
@@ -25,10 +45,11 @@
 }
 
 
-mat-chip-list{
+.chip-list-container{
+    width: 100%;
+    /* flex: 0 0 60%; */
     overflow-y: auto; 
     overflow-x: hidden; 
-    width: 100%;
     padding: 20px;
 
     background: rgba(0, 0, 0, 0.04);
@@ -36,4 +57,14 @@ mat-chip-list{
 
 }
 
-  
+label .mat-checkbox-layout {
+    width: 100%;
+    background-color: lightseagreen;
+}
+.even{
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.odd{
+    background: rgba(255, 255, 255, 0.04);
+}

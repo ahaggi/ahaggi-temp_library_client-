@@ -40,6 +40,7 @@ import { AppComponent } from './app.component';
 
 
 import { SharedPaginatedCardsComponent } from './0-shared-components/shared-paginated-cards/shared-paginated-cards.component';
+import { SubstringPipe } from './costume-pipes/substring.pipe';
 
 import { SharedCardComponent } from './0-shared-components/card/shared-card.component';
 import { SharedTableComponent } from './0-shared-components/shared-table/shared-table.component';
@@ -55,6 +56,7 @@ import { AuthorsTableComponent } from './02-authors/authors-table/authors-table.
 import { AuthorFormComponent } from './02-authors/author-form/author-form.component'; 
 
 import { ReaderComponent }       from './03-readers/reader/reader.component';
+import { ReaderFormComponent }       from './03-readers/reader-form/reader-form.component';
 import { ReadersTableComponent } from './03-readers/readers-table/readers-table.component';
 
 import { NavigationBarComponent } from './04-navigation-bar/navigation-bar.component';
@@ -75,16 +77,22 @@ import { DashboardComponent } from './05-dashboard/dashboard.component';
     SharedAutocompleteComponent,
     SharedSelectComponent,
 
+    SubstringPipe,
+
     BookComponent,
-    BooksTableComponent,
     BookFormComponent,
+    BooksTableComponent,
+
 
     AuthorComponent,
-    AuthorsTableComponent,
     AuthorFormComponent,
+    AuthorsTableComponent,
+
 
     ReaderComponent,
+    ReaderFormComponent,
     ReadersTableComponent,
+
 
     NotificationsComponent,
 

@@ -111,7 +111,6 @@ export class SharedSelectComponent implements OnInit, OnDestroy {
     );
   }
 
-
   getSelectedOptions() {
     return this.selectedOptions
   }
@@ -129,5 +128,7 @@ export type SharedSelectOption = {
 export type SharedSelectOptionPayload = {
   list: SharedSelectOption[],
   formArray: FormArray,
-  parentForm:FormGroup
+  parentForm:FormGroup,
+  title?:string,
+  msgToDispaly?:string,
 }

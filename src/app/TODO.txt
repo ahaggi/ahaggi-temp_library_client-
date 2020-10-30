@@ -1,0 +1,17 @@
+
+
+try soft delete booksToReaders?
+
+// imgUri: [''], imageUri controller to emulate image's change functionality
+
+
+
+check that all sub are unsub in ngDestroy
+
+routerlink to be routerlink ["something" , "something"] instead of ["something/${id}"]
+
+
+add this.isLoadingFailed To:
+                    BookComponent
+                    ReaderComponent
+                    AuthorComponent

@@ -55,6 +55,14 @@ export const getAuthorByIDQry = gql`
       }
     }
 `
+// IMPORTANT keep the result alais as "res"
+export const getAuthorByEmailQry = gql`
+          query ($email:String!){
+            res: _getAuthorByEmail(email: $email) {
+              id
+            }
+          }
+      `
 
 export const getAuthorsQry = gql`
 {
@@ -88,3 +96,72 @@ export const getReadersQry = gql`
                 }
             }
           `
+
+          
+          
+
+
+export const getReaderByIDQry = gql`
+        query ($id:String!){
+          reader:getReaderByID(id: $id) {
+            id
+            name
+            email
+            imgUri
+            booksToReaders {
+              id
+              borrowDate
+              returnDate
+              returned
+              book {
+                id
+              }
+            }
+          }
+        }
+`
+
+// IMPORTANT keep the result alais as "res"
+export const getReaderByEmailQry = gql`
+      query ($email:String!){
+        res: _getReaderByEmail(email: $email) {
+          id
+        }
+      }
+  `
+
+
+  export const getBtrByReaderId = gql`
+  query ($readerId:String!){
+    res: getBooksToReadersBy(_booksToReadersArgs: { reader: { id: $readerId } }) {
+      id
+      returned
+      borrowDate
+      returnDate
+      book {
+        id
+        title
+      }
+    }
+  }
+
+`
+export const getBtrByBookId = gql`
+  query ($bookId:String!){
+    res: getBooksToReadersBy(_booksToReadersArgs: { book: { id: $bookId } }) {
+      id
+      returned
+      borrowDate
+      returnDate
+      reader {
+        id
+        name
+        email
+      }
+    }
+  }
+
+`
+   
+
+  

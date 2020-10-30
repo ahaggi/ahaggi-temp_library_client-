@@ -10,9 +10,10 @@ import { Location } from '@angular/common';
 
 import { SharedSelectComponent, SharedSelectOption, SharedSelectOptionPayload } from 'src/app/0-shared-components/shared-select/shared-select.component';
 import { postAuthorMut, updateAuthorMut } from 'src/app/util/mutationsDef';
-import { getAuthorByIDQry, getAuthorsQry, getBooksQry } from 'src/app/util/queriesDef';
+import { getAuthorByEmailQry, getAuthorByIDQry, getAuthorsQry, getBooksQry } from 'src/app/util/queriesDef';
 import { FORM_MODE, ImgCategory, loadImageFromStorage } from 'src/app/util/util';
 import { MyValidators } from 'src/app/util/_Validators';
+import { query } from '@angular/animations';
 
 @Component({
   selector: 'app-author-form',
@@ -48,13 +49,14 @@ export class AuthorFormComponent implements OnInit {
 
 
     this.formGroup = this.formBuilder.group({
- 
+
       name: ['', Validators.required],
-      email: ['', [Validators.required , Validators.email , ]],
+      email: ['',[Validators.required , Validators.email]], 
+      
       about: ['', Validators.required],
 
       // imgUri: [''],
-      allAuthors: this.formBuilder.array([], MyValidators. requiredToSelectSomeValidator({ errMsg: "This book has to have at least one author" }))
+      allBooks: this.formBuilder.array([])
     });
     this.initData()
 
@@ -65,7 +67,7 @@ export class AuthorFormComponent implements OnInit {
 
     if (this.authorId) {
       this.MODE = FORM_MODE.EDIT
-      this.submitLabel = "Edit Book";
+      this.submitLabel = "Edit Author";
       this.getAuthorToUpdate().subscribe((_author) => {
         this.authorToEdit = {
           id: _author.id,
@@ -80,6 +82,7 @@ export class AuthorFormComponent implements OnInit {
 
         // NOTE: booksToAuthors, booksToReaders and id: will be ignored inside "patchValue()", since they don't have a correspondent FormControl
         this.formGroup.patchValue(this.authorToEdit)
+        this.setAsyncValidationOnEmail()
 
         this.getlistOfAllBooks().subscribe((books) => {
           this.createSharedSelectOptions(books)
@@ -88,14 +91,24 @@ export class AuthorFormComponent implements OnInit {
     } else {
       this.MODE = FORM_MODE.CREATE
       this.submitLabel = "Submit";
+      this.setAsyncValidationOnEmail()
       this.getlistOfAllBooks().subscribe((books) => {
         this.isLoading = false;
         this.createSharedSelectOptions(books)
       })
     }
 
-  }
 
+
+  }
+  setAsyncValidationOnEmail(){
+    let emailController = this.formGroup.get('email')
+    emailController.setAsyncValidators([MyValidators.emailAlreadyRegisteredValidator(
+     // this.authorToEdit?.email         will be '' if  this.MODE != FORM_MODE.EDIT
+      { errMsg: 'This email is already registered!', apollo:this.apollo , exceptValue:((this.authorToEdit?.email)||'')  , query:getAuthorByEmailQry}
+      )])
+      emailController.updateValueAndValidity()
+  }
   getAuthorToUpdate(): Observable<any> {
     return this.apollo.watchQuery<_Author>({
       variables: { id: this.authorId },
@@ -103,7 +116,7 @@ export class AuthorFormComponent implements OnInit {
     })
       .valueChanges
       .pipe(
-      takeUntil(this._ngUnsubscribe$),
+        takeUntil(this._ngUnsubscribe$),
 
         map((res: any) => res.data.author),
         catchError((err, c) => {
@@ -115,13 +128,28 @@ export class AuthorFormComponent implements OnInit {
       )
   }
 
+
+  checkIfEmailIsRegistered = () => {
+    
+    // edit not exist (all - this editor)
+    // create check that not exist              "a@a.com"
+    return this.apollo.watchQuery<_Author>({
+      variables: { email: this.formGroup.value.email.value },
+      query: getAuthorByEmailQry,
+    })
+      .valueChanges
+      .pipe(
+        map((res: any) => res?.data?.author?.id != null),
+
+      )
+  }
   getlistOfAllBooks(): Observable<any> {
     return this.apollo.watchQuery<any>({
       query: getBooksQry,
     })
       .valueChanges
       .pipe(
-      takeUntil(this._ngUnsubscribe$),
+        takeUntil(this._ngUnsubscribe$),
 
         map((res: any) => res.data.books),
 
@@ -151,7 +179,9 @@ export class AuthorFormComponent implements OnInit {
     this.booksSelectOptionPayLoad = {
       parentForm: this.formGroup,
       formArray: allBooksFormArray,
-      list: _list
+      list: _list,
+      title: "Published Books:",
+      msgToDispaly: "Choose which books have been published by this author."
     }
   }
 
@@ -159,10 +189,9 @@ export class AuthorFormComponent implements OnInit {
     if (this.formGroup.valid) {
       let _booksToAuthors = this.computeBooksToAuthorsStatus()
       let auhtor = {
-        id: "string",
-        name: "string",
-        email: "string",
-        about: "string",
+        name: this.formGroup.value.name,
+        email: this.formGroup.value.email,
+        about: this.formGroup.value.about,
         booksToAuthors: _booksToAuthors
       }
 
@@ -171,7 +200,6 @@ export class AuthorFormComponent implements OnInit {
       } else {
         this.postAuthor(auhtor)
       }
-
       this.goBack();
     }
   }
@@ -187,7 +215,7 @@ export class AuthorFormComponent implements OnInit {
       }],
     })
       .pipe(
-      takeUntil(this._ngUnsubscribe$),
+        takeUntil(this._ngUnsubscribe$),
 
         catchError((err, c) => {
           console.log(err)
@@ -207,7 +235,7 @@ export class AuthorFormComponent implements OnInit {
       variables: { id: this.authorId, data: _data },
     })
       .pipe(
-      takeUntil(this._ngUnsubscribe$),
+        takeUntil(this._ngUnsubscribe$),
 
         catchError((err, c) => {
           console.log(err)
@@ -228,7 +256,7 @@ export class AuthorFormComponent implements OnInit {
 
   computeBooksToAuthorsStatus() {
 
-    // selectedAuthsID: this is the list of authors' ids that has been choosed by the user
+    // selectedAuthsID: this is the list of books' ids that has been published by this author
     // this.authorToEdit will be null in create mode.
     // this.authorToEdit.booksToAuthors: this the state of booksToAuthors in the db which means this is the edit mode
     // this.authorToEdit.booksToAuthors has the flwg structure:
@@ -245,7 +273,7 @@ export class AuthorFormComponent implements OnInit {
     let _booksToAuthors: any[] = this.authorToEdit?.booksToAuthors || []
     let booksIDsBeforeEdit = _booksToAuthors.map(({ book: { id } }) => id)
 
-    let selectedBooksID: string[] = this.booksSelectComponent.getSelectedOptions().map(selectOption => selectOption.uniqueValue)
+    let selectedBooksID: string[] = this.booksSelectComponent?.getSelectedOptions().map(selectOption => selectOption.uniqueValue) || []
 
     // let booksIdToConnect = selectedBooksID - booksIDsBeforeEdit
     let booksIdToConnect = selectedBooksID.filter(id => !booksIDsBeforeEdit.includes(id))
@@ -253,14 +281,14 @@ export class AuthorFormComponent implements OnInit {
 
     let res = { create: bookToAuthsIdsToCreate }
 
-    if(this.MODE == FORM_MODE.EDIT){
-    // let bookToAuthsIDsToDelete = (this.authorToEdit.booksToAuthors.bookId) - selectedBooksID
+    if (this.MODE == FORM_MODE.EDIT) {
+      // let bookToAuthsIDsToDelete = (this.authorToEdit.booksToAuthors.bookId) - selectedBooksID
       let bookToAuthsIDsToDelete = (_booksToAuthors.filter(({ book: { id: bookId } }) => !selectedBooksID.includes(bookId))).map(({ id }) => id)
       let bookToAuthsToDelete = bookToAuthsIDsToDelete.map(btaId => { return { id: btaId } })
       // res = { create: bookToAuthsIdsToCreate, delete: bookToAuthsToDelete }
-       res['delete'] =  bookToAuthsToDelete 
+      res['delete'] = bookToAuthsToDelete
     }
-    
+
     return res;
   }
 

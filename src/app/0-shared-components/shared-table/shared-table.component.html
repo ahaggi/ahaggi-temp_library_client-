@@ -69,12 +69,24 @@
 
         <!-- For elements of this structure    -->
         <ng-template #justText>
-          <span  [ngClass]="{'hyperlink':element[col].routerLink}" [routerLink]="[element[col].routerLink]"> {{element[col].viewValue}} </span>
+          <ng-container *ngIf="element[col].routerLink; then hyperlink; else plainText">
+          </ng-container>
+          <ng-template #hyperlink>
+            <span [ngClass]="{'hyperlink':true}" [routerLink]="[element[col].routerLink]"> {{element[col].viewValue}}
+            </span>
+          </ng-template>
+
+          <ng-template #plainText>
+            <span> {{element[col].viewValue}} </span>
+          </ng-template>
+
+
+
         </ng-template>
 
 
         <ng-template #ndx>
-          <span > {{dataSource.filteredData.indexOf(element)+1}} </span>
+          <span> {{dataSource.filteredData.indexOf(element)+1}} </span>
         </ng-template>
 
 

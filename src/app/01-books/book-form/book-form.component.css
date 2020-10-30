@@ -63,3 +63,5 @@
     width: 200px;
     
 }
+
+mat-error {white-space: pre-line;}

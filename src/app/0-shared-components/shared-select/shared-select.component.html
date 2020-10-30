@@ -1,43 +1,42 @@
-<div class="container" [formGroup] = "payload?.parentForm">
+<div class="container">
+    <h3 style="margin-bottom: 0px;"> {{payload?.title}}</h3>
+    <div class="lists-container" [formGroup]="payload?.parentForm">
+
+        <div class="checkbox-list-container">
+            <mat-form-field>
+                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="filter the list ..."
+                    [formControl]="filterController">
+            </mat-form-field>
+
+            <section class="checkbox-list">
+                <mat-checkbox *ngFor="let option of filteredOptionsObs$ | async ; let i = index"
+                    [ngClass]="(i%2==0)?'even':'odd'" [formControl]="option.formControllerBoolean">
+                    <div >
+                        <span  > {{(option.viewValue.fst | substring:0:30)}} |<br />
+                            <small> {{(option.viewValue.snd | substring:0:30)}}</small></span>
+                    </div>
+                    <mat-divider></mat-divider>
+                </mat-checkbox>
+
+            </section>
+        </div>
 
 
-    <div>
-        <mat-form-field>
-            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="filter by ..."
-                [formControl]="filterController">
-        </mat-form-field>
+        <div class="chip-list-container">
+            <mat-chip-list>
+                <mat-chip *ngFor="let option of selectedOptions" removable="true"
+                    (removed)="changeFormControllerValue(option)">
+                    <span> {{option.viewValue.fst}} </span>
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+                <span style="margin: 40px 0 0 40px; color: grey;"
+                    *ngIf="payload?.msgToDispaly && selectedOptions.length == 0">
+                    {{payload?.msgToDispaly}}
+                </span>
+            </mat-chip-list>
+        </div>
 
-        <section class="checkbox-list">
-            <mat-checkbox *ngFor="let option of filteredOptionsObs$ | async ; let i = index" [formControl] = "option.formControllerBoolean">
-                <span> {{option.viewValue.fst}} |
-                    <small> {{option.viewValue.snd}}</small></span>
-                <mat-divider></mat-divider>
-            </mat-checkbox>
-        </section>
+
     </div>
-
-
-
-    <mat-chip-list >
-        <mat-chip *ngFor="let option of selectedOptions" removable="true" (removed)="changeFormControllerValue(option)">
-            <span> {{option.viewValue.fst}} |
-                <small> {{option.viewValue.snd}}</small></span>
-            <mat-icon matChipRemove>cancel</mat-icon>
-        </mat-chip>
-
-        <span style="margin: 40px 0 0 40px; color: grey;" *ngIf="payload?.formArray?.hasError('__errMsg') ">
-            {{payload?.formArray?.errors['__errMsg']}}
-        </span>
-
-
-    </mat-chip-list>
-
-
-
-
-    
-    
-
-
 
 </div>

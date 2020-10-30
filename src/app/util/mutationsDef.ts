@@ -94,3 +94,39 @@ mutation ($data: _AuthorCreateInput!) {
 
 
 // export const deleteAuthorMut = gql``
+
+
+
+/********************************************************************* */
+
+
+export const updateReaderMut = gql`
+                  mutation ($id:String!, $data: _ReaderUpdateInput!){
+                    updateReader(where: { id: $id }, data: $data) {
+                      id
+                      name
+                      email
+                      imgUri
+                      booksToReaders {
+                        id
+                        book {
+                          id
+                        }
+                      }
+                    }
+                  }
+`
+
+export const postReaderMut = gql`
+                  mutation ($data: _ReaderCreateInput!) {
+                    createReader(data:$data){
+                      id
+                      name
+                      email
+                      imgUri
+                      booksToReaders{id book { id }}
+                    }
+                  }
+`
+
+// export const deleteReaderMut = gql``

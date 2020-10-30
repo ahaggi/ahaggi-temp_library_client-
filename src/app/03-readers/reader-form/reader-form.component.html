@@ -18,8 +18,8 @@
                 <div class="sections-container">
                     <div class="section-l">
                         <div>
-                            <ng-template [ngIf]="authorToEdit?.imgUri" [ngIfElse]="placeHolder">
-                                <img [src]="authorToEdit.imgUri" width="128" height="150">
+                            <ng-template [ngIf]="readerToEdit?.imgUri" [ngIfElse]="placeHolder">
+                                <img [src]="readerToEdit.imgUri" width="128" height="150">
                             </ng-template>
 
                             <ng-template #placeHolder>
@@ -68,19 +68,9 @@
                         </div>
 
 
-                        <div class=" input-feilds-container">
-                            <mat-form-field appearance="outline" class="_grow">
-                                <mat-label for="about">About</mat-label>
-                                <textarea id="about" matInput type="text" formControlName="about" rows="4"
-                                    cols="50"></textarea>
-                                <mat-error *ngIf="formGroup?.controls?.about.hasError('required')">
-                                    This field is required
-                                </mat-error>
-                            </mat-form-field>
-                             
-                        </div>
 
 
+<!-- 
                         <div  *ngIf="booksSelectOptionPayLoad">
                             <app-shared-select [payload]="booksSelectOptionPayLoad" [isRequiredFormField]="true">
                             </app-shared-select>
@@ -88,7 +78,7 @@
                                 {{formGroup?.controls?.allBooks?.errors['__errMsg']}}
                             </mat-error>
 
-                        </div>
+                        </div> -->
 
 
                         <div class="buttuns-container">

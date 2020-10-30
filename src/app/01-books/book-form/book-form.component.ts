@@ -63,7 +63,7 @@ export class BookFormComponent implements OnInit {
         // use this.formGroup.get('controllerName').value , and NOT this.formGroup.value.controllerName
         borrowedQuantity: [{ value: '', disabled: true }, [Validators.required, Validators.pattern('\\d+')]],
       }),
-      allAuthors: this.formBuilder.array([], MyValidators.requiredToSelectSomeValidator({ errMsg: "This book has to have at least one author" }))
+      allAuthors: this.formBuilder.array([], MyValidators.requiredToSelectSomeValidator({ errMsg: "This book has to have at least one author.\nPlease select from the above list." }))
       // opt-out of creating a controller for the booksToAuthors/booksToReaders, since its not necessary
       // booksToAuthors:this.formBuilder.array([
       //   this.formBuilder.group({
@@ -183,9 +183,11 @@ export class BookFormComponent implements OnInit {
     })
 
     this.authorsSelectOptionPayLoad = {
+      title:"Authors:",
       parentForm: this.formGroup,
       formArray: allAuthorsFormArray,
-      list: _list
+      list: _list,
+      msgToDispaly:"This book has to have at least one author"
     }
 
   }
@@ -373,7 +375,7 @@ export class BookFormComponent implements OnInit {
     // if create mode => there's no authors' list to edit only to add
     let _booksToAuthors: any[] = this.bookToEdit?.booksToAuthors || []
 
-    let selectedAuthsID: string[] = this.authorsSelectComponent.getSelectedOptions().map(selectOption => selectOption.uniqueValue)
+    let selectedAuthsID: string[] = this.authorsSelectComponent?.getSelectedOptions().map(selectOption => selectOption.uniqueValue) || []
 
     let authsIDsBeforeEdit = _booksToAuthors.map(({ author: { id } }) => id)
     // let authsIdToConnect = selectedAuthsID - authsIDsBeforeEdit

@@ -4,6 +4,12 @@
     <ng-template class="container" [ngIf]="author" [ngIfElse]="loadingFailed">
 
         <div class="author-details">
+            <div class="edit-button-container">
+                <button mat-raised-button color="primary" [routerLink]="['/editauthor/' , author.id]"> 
+                    <mat-icon >edit</mat-icon>
+                </button>
+            </div>
+    
             <img class="personal-image" [src]="author.imgUri" width="128" height="150">
             <div>
                 <h2>Personal Info :</h2>

@@ -3,6 +3,12 @@
 
     <ng-template class="container" [ngIf]="reader" [ngIfElse]="loadingFailed">
 
+        <div class="edit-button-container">
+            <button mat-raised-button color="primary" [routerLink]="['/editreader/' , reader.id]"> 
+                <mat-icon >edit</mat-icon>
+            </button>
+        </div>
+
         <div class="personal-info-container">
             <img [src]="reader.imgUri" width="128" height="150">
             <div>
