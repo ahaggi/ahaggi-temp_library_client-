@@ -59,7 +59,7 @@
 
 label .mat-checkbox-layout {
     width: 100%;
-    background-color: lightseagreen;
+    /* background-color: lightseagreen; */
 }
 .even{
     background: rgba(0, 0, 0, 0.04);

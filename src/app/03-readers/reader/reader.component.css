@@ -12,7 +12,7 @@
 .edit-button-container{
   display: flex;
   justify-content: flex-end;
-  background-color: rgb(235, 41, 41);
+  /* background-color: rgb(235, 41, 41); */
 
 }
 
@@ -20,7 +20,7 @@
   display: flex;
   align-items: center;
   padding-bottom: 40px;
-  background-color: rgb(232, 235, 41);
+  /* background-color: rgb(232, 235, 41); */
 
 }
 
@@ -29,7 +29,7 @@
    flex-direction: column;
    align-items: center;
    width: 20vw;
-   background-color: rgb(41, 235, 73);
+   /* background-color: rgb(41, 235, 73); */
 
 }
 
@@ -38,7 +38,7 @@
   flex-direction: column;
   width: 50vw;
   height: 100%;
-  background-color: rgb(41, 219, 235);
+  /* background-color: rgb(41, 219, 235); */
 
 }
 
@@ -49,7 +49,7 @@
   height: 128px;
   overflow: hidden;
   border-radius: 50%;
-  background-color: tomato;
+  /* background-color: tomato; */
 }
 
 .reader-name-section{
@@ -65,13 +65,13 @@
   flex-wrap: wrap;
   justify-content: space-around;
   margin: 20px 0 20px 0;
-  background-color: rgb(58, 65, 131);
+  /* background-color: rgb(58, 65, 131); */
 }
 
 .personal-info-col{
   display: flex;
   flex-direction: column;
-  background-color: rgb(126, 131, 58);
+  /* background-color: rgb(126, 131, 58); */
 }
 
 
@@ -79,7 +79,7 @@
   display: flex;
   align-items: baseline;
   min-width: 250px;
-  background-color: rgb(42, 230, 104);
+  /* background-color: rgb(42, 230, 104); */
 }
 .add-padding-l{
   padding-left: 10px;
@@ -89,34 +89,10 @@
   .sections-container{
       flex-direction: column;
       align-items: center;
-      background-color: rgb(41, 44, 235);
+      /* background-color: rgb(41, 44, 235); */
 
   }
   
 
 }
-/* .container{
-  display: flex; 
-  flex-direction:column;
-  justify-content:flex-start
-}
-
-.personal-info-container{
-  display: flex; 
-  flex-direction:row;
-  justify-content:center
-}
-.personal-info-field{
-  display: flex; 
-  flex-direction:row;
-  align-items:baseline;
-  padding-left: 20px;
-}
-
-.personal-info-field p {
-  margin-left: 30px;
-} */
-
-
-
 
