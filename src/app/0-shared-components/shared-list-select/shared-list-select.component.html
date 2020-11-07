@@ -4,7 +4,7 @@
 
         <div class="checkbox-list-container">
             <mat-form-field>
-                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="filter the list ..."
+                <input matInput (keyup)="applyFilter($event.target.value)" [placeholder]="filterInputPlaceholder"
                     [formControl]="filterController">
             </mat-form-field>
 

@@ -5,16 +5,16 @@ import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { Observable, of, Subject } from 'rxjs';
 
-import { catchError, debounceTime, distinctUntilChanged, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { FORM_MODE, ImgCategory, loadImageFromStorage } from 'src/app/util/util';
+import { catchError, debounceTime, delay, distinctUntilChanged, first, flatMap, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { FORM_MODE, generateFakeISBN, ImgCategory, loadImageFromStorage } from 'src/app/util/util';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { SharedSelectComponent, SharedSelectOption, SharedSelectOptionPayload } from '../../0-shared-components/shared-select/shared-select.component';
-import { getAuthorsQry, getBookQry, getBooksQry } from 'src/app/util/queriesDef';
+import { SharedListSelectComponent, SlsOption, SlsPayload } from '../../0-shared-components/shared-list-select/shared-list-select.component';
+import { getAuthorsQry, getBookByIDQry, getBookByIsbnQry, getBooksQry } from 'src/app/util/queriesDef';
 import { postBookMut, updateBookMut } from 'src/app/util/mutationsDef';
-import { MyValidators } from 'src/app/util/_Validators';
+import { MyValidators } from 'src/app/util/_validators';
 
 
 @Component({
@@ -35,12 +35,12 @@ export class BookFormComponent implements OnInit {
 
   // Holds the DB values to be edited 
   bookToEdit: _Book;
-  submitLabel: string= "";
+  submitLabel: string = "";
 
-  authorsSelectOptionPayLoad: SharedSelectOptionPayload;
+  authorsSlsPayload: SlsPayload;
 
-  @ViewChild(SharedSelectComponent)
-  private authorsSelectComponent: SharedSelectComponent;
+  @ViewChild(SharedListSelectComponent)
+  private authorsSelectComponent: SharedListSelectComponent;
 
   constructor(private apollo: Apollo, private formBuilder: FormBuilder, private route: ActivatedRoute, private location: Location) { }
 
@@ -53,6 +53,7 @@ export class BookFormComponent implements OnInit {
 
     this.formGroup = this.formBuilder.group({
       title: ['', Validators.required],
+      isbn: ['', Validators.required],
       pages: ['', [Validators.required, Validators.pattern('\\d+')]],
       chapters: ['', [Validators.required, Validators.pattern('\\d+')]],
       price: ['', [Validators.required, Validators.pattern('\\d*(\\.)?\\d*')]],
@@ -92,6 +93,7 @@ export class BookFormComponent implements OnInit {
         this.bookToEdit = {
           id: _b.id,
           title: _b.title,
+          isbn: _b.isbn,
           pages: _b.pages,
           chapters: _b.chapters,
           price: _b.price,
@@ -126,7 +128,7 @@ export class BookFormComponent implements OnInit {
   getBookToUpdate(): Observable<any> {
     return this.apollo.watchQuery<_Book>({
       variables: { id: this.bookId },
-      query: getBookQry,
+      query: getBookByIDQry,
     })
       .valueChanges
       .pipe(
@@ -134,7 +136,6 @@ export class BookFormComponent implements OnInit {
 
         map((res: any) => res.data.book),
         catchError((err, c) => {
-          this.isLoadingFailed = true;
           console.log(err)
           console.log(c)
           return of({})
@@ -173,7 +174,7 @@ export class BookFormComponent implements OnInit {
       let fc = new FormControl(isThisBookAuth)
       allAuthorsFormArray.push(fc)
 
-      let option: SharedSelectOption = {
+      let option: SlsOption = {
         uniqueValue: auth?.id,
         viewValue: { fst: auth?.email, snd: auth?.name },
         formControllerBoolean: fc
@@ -182,12 +183,12 @@ export class BookFormComponent implements OnInit {
       return option
     })
 
-    this.authorsSelectOptionPayLoad = {
-      title:"Authors:",
+    this.authorsSlsPayload = {
+      title: "Authors:",
       parentForm: this.formGroup,
       formArray: allAuthorsFormArray,
       list: _list,
-      msgToDispaly:"This book has to have at least one author"
+      msgToDispaly: "This book has to have at least one author"
     }
 
   }
@@ -207,6 +208,7 @@ export class BookFormComponent implements OnInit {
         price: +(this.formGroup.value.price),
         // string values
         title: this.formGroup.value.title,
+        isbn: this.formGroup.value.isbn,
         description: this.formGroup.value.description,
         // Aggregated values
         storage: _storage,
@@ -235,15 +237,15 @@ export class BookFormComponent implements OnInit {
 
   }
 
-  postBook(data): void {
+  postBook(book): void {
     console.log("*******************postBook*******************")
 
     this.apollo.mutate({
       mutation: postBookMut,
-      variables: { data: data },
+      variables: { data: book },
 
       refetchQueries: [{
-        query: getBooksQry
+        query: getBooksQry,
       }],
       // update: (store, resp:any) => {
       //   let createdBook: any = resp?.data?.createdBook
@@ -270,6 +272,7 @@ export class BookFormComponent implements OnInit {
     // updateBook(
     //   where: { id: "2" }
     //   data: {
+    //     isbn: "1-2-34"
     //     title: "q"
     //     pages: 2
     //     ...
@@ -294,6 +297,11 @@ export class BookFormComponent implements OnInit {
     this.apollo.mutate({
       mutation: updateBookMut,
       variables: { id: this.bookId, data: _data },
+      refetchQueries: [{
+        query: getBookByIDQry,
+        variables: { id: this.bookId, data: _data },
+      }],
+
       update: (store, resp: any) => {
         let updatedBook: any = resp?.data?.updateBook
         this.updateStoreAfterUpdateBook({ store, updatedObject: updatedBook })
@@ -320,13 +328,13 @@ export class BookFormComponent implements OnInit {
     // OBS ALLWAYS use try/catch with readQuery, becuase readQuery will never make a request to your GraphQL server, 
     // and it will throw an error if the data is not in your cache. 
     const dataFromStore = store.readQuery({
-      query: getBookQry,
+      query: getBookByIDQry,
       variables: { id: _updatedBookId },
     });
     dataFromStore.book = {...updatedObject}
 
     store.writeQuery({
-      query: getBookQry,
+      query: getBookByIDQry,
       variables: { id: _updatedBookId }, 
       dataFromStore
     })
@@ -407,6 +415,57 @@ export class BookFormComponent implements OnInit {
     return (this.MODE == FORM_MODE.EDIT) ? toUpdate : toCreate;
   }
 
+
+  genAndCheckISBN$ = () => {
+    return of(generateFakeISBN())
+      .pipe(
+        takeUntil(this._ngUnsubscribe$),
+        delay(500),
+        flatMap((isbn) => this.checkIsbnNotExist$(isbn)),
+        flatMap(validity => {
+          if (validity.notExist)
+            return of(validity.isbn)
+          else
+            return this.genAndCheckISBN$()
+        })
+      )
+  }
+
+  checkIsbnNotExist$ = (_isbn) => {
+    return this.apollo.watchQuery<_Book>({
+      variables: { isbn: _isbn },
+      query: getBookByIsbnQry,
+    }).valueChanges
+      .pipe(
+        takeUntil(this._ngUnsubscribe$),
+        map((res: any) => {
+          if (res.data.book?.id == null)
+            return { notExist: true, isbn: _isbn }
+          else
+            return { notExist: false }
+        }),
+        first() // NOTE: We have to use first here becuase apollo.watchQuery is like Subject that emits but does not complete,, "open-stream"-ish
+        // catchError((err, c) => {
+        //   console.log(err)
+        //   console.log(c)
+        //   // return of({notExist: false})
+        // })
+      )
+  }
+
+
+
+  generatingISBN: boolean = false
+  scanISBN() {
+    this.generatingISBN = true
+    this.genAndCheckISBN$().subscribe(isbn => {
+      let _isbnController = this.formGroup.controls.isbn;
+      _isbnController.setValue(isbn)
+      _isbnController.markAsDirty()
+      this.generatingISBN = false
+    })
+  }
+
   get allFormControls() {
     return this.formGroup.controls;
   }
@@ -433,6 +492,7 @@ export class BookFormComponent implements OnInit {
 type _Book = {
   id: string;
   title: string;
+  isbn: string;
   pages: number;
   chapters: number;
   price: number;

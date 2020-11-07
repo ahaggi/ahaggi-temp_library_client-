@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { DashboardComponent } from './05-dashboard/dashboard.component'
+import { DashboardComponent } from './06-dashboard/dashboard.component'
 
 import { BookComponent } from './01-books/book/book.component'
 import { BookFormComponent } from './01-books/book-form/book-form.component'
@@ -14,6 +14,7 @@ import { AuthorsTableComponent } from './02-authors/authors-table/authors-table.
 import { ReaderComponent } from './03-readers/reader/reader.component'
 import { ReaderFormComponent } from './03-readers/reader-form/reader-form.component'
 import { ReadersTableComponent } from './03-readers/readers-table/readers-table.component'
+import { ReaderBtrTableComponent } from './03-readers/reader/reader-btr-table/reader-btr-table.component';
 
 import { CanDeactivateGuard ,} from './can-deactivate.guard'
 const routes: Routes = [
@@ -35,6 +36,7 @@ const routes: Routes = [
   { path: 'reader/:id', component: ReaderComponent },
   { path: 'editreader/:id', component:  ReaderFormComponent , canDeactivate: [CanDeactivateGuard]},
   { path: 'addreader', component:  ReaderFormComponent, canDeactivate: [CanDeactivateGuard]},
+  { path: 'btr', component:  ReaderBtrTableComponent},
 
 ];
 

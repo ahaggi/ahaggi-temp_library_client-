@@ -1,0 +1,21 @@
+   
+
+.form-container{
+    display: flex;
+    flex-direction:column ;
+    justify-content: flex-start;
+    align-items: stretch;
+    /* background-color: teal; */
+    background-color: rgb(250, 250, 250);
+
+}
+
+
+
+.buttons-container{
+    display: flex;
+    flex-direction:row ;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    width: 200px;
+}

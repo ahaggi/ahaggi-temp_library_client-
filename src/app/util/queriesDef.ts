@@ -1,64 +1,95 @@
 
 import gql from 'graphql-tag';
 
-export const getBookQry = gql`
-    query ($id:String!){
-        book: getBookByID(id:$id){
-            id
-            title
-            pages
-            chapters
-            price
-            description
-            imgUri
-            storage{id quantity borrowedQuantity}
-            available
-            booksToAuthors{id author{id name about imgUri}}
-            booksToReaders{ id  borrowDate  returnDate  returned reader{id name imgUri}}
-        }
-    }`;
+export const getBookByIDQry = gql`
+query($id: String!) {
+  book: getBookByID(id: $id) {
+    id
+    title
+    isbn
+    pages
+    chapters
+    price
+    description
+    imgUri
+    storage {id quantity borrowedQuantity }
+    available
+    booksToAuthors {
+      id
+      author {id name email about imgUri }
+    }
+    booksToReaders { id borrowDate returnDate returned remainingTime
+                      reader {id name email costumerId address phone imgUri }
+    }
+  }
+}`;
+
+export const getBookByIsbnQry  = gql`
+query($isbn: String!) {
+  book: getBookByISBN(isbn:$isbn) {
+    id
+    isbn
+  }
+}`;
+
 export const getBooksQry = gql`
     {
       books:getBooks{
-            id
-            title
-            pages
-            chapters
-            price
-            description
-            imgUri
-            storage{id quantity borrowedQuantity}
-            available
-            booksToAuthors{id author{id name about imgUri}}
-            booksToReaders{ id  borrowDate  returnDate  returned reader{id name imgUri}}
+        id
+        title
+        isbn
+        pages
+        chapters
+        price
+        description
+        imgUri
+        storage {id quantity borrowedQuantity }
+        available
+        booksToAuthors {
+          id
+          author {id name email about imgUri }
         }
+        booksToReaders { id borrowDate returnDate returned remainingTime
+                          reader {id name email costumerId address phone imgUri }
+        }
+      }
     }
     `;
 
 
 
 
+ 
 export const getAuthorByIDQry = gql`
-    query ($id:String!){
-      author: getAuthorByID(id: $id) {
+query($id: String!) {
+  author: getAuthorByID(id: $id) {
+    id
+    name
+    email
+    about
+    imgUri
+    booksToAuthors {
+      id
+      book {
         id
-        name
-        email
-        about
+        title
+        isbn
+        pages
+        chapters
+        price
+        description
         imgUri
-        booksToAuthors {
-          id
-          book {
-            id
-          }
-        }
+        storage { id quantity borrowedQuantity }
+        available
       }
     }
+  }
+}
 `
 // IMPORTANT keep the result alais as "res"
 export const getAuthorByEmailQry = gql`
           query ($email:String!){
-            res: _getAuthorByEmail(email: $email) {
+            res: getAuthorByEmail(email: $email) {
               id
             }
           }
@@ -73,14 +104,24 @@ export const getAuthorsQry = gql`
     about
     imgUri
     booksToAuthors {
+      id
       book {
         id
         title
+        isbn
+        pages
+        chapters
+        price
+        description
+        imgUri
+        storage { id quantity borrowedQuantity }
+        available
       }
     }
   }
 }
 `;
+
 
 
 
@@ -91,32 +132,53 @@ export const getReadersQry = gql`
                   id,
                   name,
                   email,
-                  imgUri
-                  booksToReaders{ id  borrowDate  returnDate  returned book{id title}}
+                  costumerId,
+                  address,
+                  phone,
+                  imgUri,
+                  booksToReaders{ id  borrowDate  returnDate  returned remainingTime
+                                book {
+                                  id
+                                  title
+                                  isbn
+                                  pages
+                                  chapters
+                                  price
+                                  description
+                                  imgUri
+                                  storage { id quantity borrowedQuantity }
+                                  available}
+                                }
                 }
             }
           `
 
           
-          
-
 
 export const getReaderByIDQry = gql`
         query ($id:String!){
           reader:getReaderByID(id: $id) {
-            id
-            name
-            email
-            imgUri
-            booksToReaders {
-              id
-              borrowDate
-              returnDate
-              returned
-              book {
-                id
-              }
-            }
+            id,
+            name,
+            email,
+            costumerId,
+            address,
+            phone,
+            imgUri,
+            booksToReaders{ id  borrowDate  returnDate  returned remainingTime
+                          book {
+                            id
+                            title
+                            isbn
+                            pages
+                            chapters
+                            price
+                            description
+                            imgUri
+                            storage { id quantity borrowedQuantity }
+                            available}
+                          }
+
           }
         }
 `
@@ -124,44 +186,14 @@ export const getReaderByIDQry = gql`
 // IMPORTANT keep the result alais as "res"
 export const getReaderByEmailQry = gql`
       query ($email:String!){
-        res: _getReaderByEmail(email: $email) {
+        res: getReaderByEmail(email: $email) {
           id
         }
       }
   `
 
 
-  export const getBtrByReaderId = gql`
-  query ($readerId:String!){
-    res: getBooksToReadersBy(_booksToReadersArgs: { reader: { id: $readerId } }) {
-      id
-      returned
-      borrowDate
-      returnDate
-      book {
-        id
-        title
-      }
-    }
-  }
-
-`
-export const getBtrByBookId = gql`
-  query ($bookId:String!){
-    res: getBooksToReadersBy(_booksToReadersArgs: { book: { id: $bookId } }) {
-      id
-      returned
-      borrowDate
-      returnDate
-      reader {
-        id
-        name
-        email
-      }
-    }
-  }
-
-`
+  
    
 
   

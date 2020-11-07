@@ -27,7 +27,7 @@ export class AuthorsTableComponent implements OnInit {
       .valueChanges
       .pipe(
         // delay(3000),
-      takeUntil(this._ngUnsubscribe$),
+        takeUntil(this._ngUnsubscribe$),
 
         map(res => {
           console.log(res)
@@ -40,65 +40,82 @@ export class AuthorsTableComponent implements OnInit {
           this.isLoadingFailed = true;
           return of([] as _AuthorCells[])
         }),
-        finalize(() => this.isLoading = false)
+        // finalize(() => this.isLoading = false) wouldn't work with "watchQuery" without using for ex. "take(1)" to close the stream
       )
       .subscribe(authors => {
 
-        let _data = this.formatData(authors)
-        let _temp_displayedCols = Object.keys(_data[0])
-        let colStyling = {
-          id: { flexGrow: 0.5 },
-          imgUri: { flexGrow: 1 },
-          name: { flexGrow: 1 },
-          email: { flexGrow: 2 },
-          about: { flexGrow: 5 },
-          books: { flexGrow: 5 },
-        }
 
-        this.payload = {
-          data: _data,
-          displayedColumns: _temp_displayedCols,
-          colStyling: colStyling,
-          filterInputPlaceHolder: "Filter By Author's Name or Email, or Book's Title Only....",
-          filterPredicate: (author, filter: string): boolean => {
-            let foldUntilTrue = (acc, book, _, arr) => {
-              // folding until one of the values become true or to the endOfList, 
-              if (acc) {
-                // mutate the array to prevent further testing
-                arr.splice(0);
-                return true;
-              }
-              return book.viewValue.toLowerCase().includes(filter.toLowerCase())
-            }
-            return (
-              author.name.viewValue.toLowerCase().includes(filter.toLowerCase()) ||
-              author.email.viewValue.toLowerCase().includes(filter.toLowerCase()) ||
-              (author.books.arr.slice().reduce(foldUntilTrue, false))
 
-            );
-          }
-        }
+        this.payload = this.createPayload(authors)
         this.isLoading = false;
       });
   }
 
-  formatData(authors): _AuthorCells[] {
+  createPayload(authors): Payload<_AuthorCells> {
 
-    let cells = authors.map((elm) => {
+    let data = authors.map((elm) => {
       let tempBooks = elm?.booksToAuthors?.map(({ book: { id, title } }) => { return { viewValue: title, routerLink: `/book/${id}` } });
-      let tempImg = { alt: elm?.name, src: loadImageFromStorage(elm?.imgUri, ImgCategory.PERSON), height: "48", width: "48", _kind: sharedTableCellKind.IMAGE }
+      // let tempImg = { alt: elm?.name, src: loadImageFromStorage(elm?.imgUri, ImgCategory.PERSON), height: "48", width: "48", _kind: sharedTableCellKind.IMAGE }
 
-      let book: _AuthorCells = {
+      let author: _AuthorCells = {
         id: { representValue: elm?.id, _kind: sharedTableCellKind.INDEX },
-        imgUri: tempImg,
+        // imgUri: tempImg,
         name: { viewValue: elm?.name, _kind: sharedTableCellKind.TEXT, routerLink: `/author/${elm?.id}` },
         email: { viewValue: elm?.email, _kind: sharedTableCellKind.TEXT },
         about: { viewValue: elm?.about, _kind: sharedTableCellKind.TEXT },
         books: { arr: tempBooks, _kind: sharedTableCellKind.CHIP_LIST },
       };
-      return book;
+      return author;
     })
-    return cells;
+
+    // NOTE: keys ordering determine which columns are shown and the colomns' ordering inside the table
+    let keys = [
+      "id",
+      // "imgUri",
+      "name",
+      "email",
+      "about",
+      "books",
+    ]
+
+    let displayedColumns = {
+      id: "Nr.",
+      // imgUri: " ",
+      name: "Name",
+      email: "Email",
+      about: "About",
+      books: "Books",
+    }
+
+    let colStyle = {
+      id: { flexGrow: 0.5 },
+      // imgUri: { flexGrow: 1 },
+      name: { flexGrow: 1 },
+      email: { flexGrow: 2 },
+      about: { flexGrow: 5 },
+      books: { flexGrow: 5 },
+    }
+
+    let filterInputPlaceHolder = "Filter By Author's Name or Email, or Book's Title Only....";
+    let filterPredicate = (author, filter: string): boolean => {
+      let foldUntilTrue = (acc, book, _, arr) => {
+        // folding until one of the values become true or to the endOfList, 
+        if (acc) {
+          // mutate the array to prevent further testing
+          arr.splice(0);
+          return true;
+        }
+        return book.viewValue.toLowerCase().includes(filter.toLowerCase())
+      }
+      return (
+        author.name.viewValue.toLowerCase().includes(filter.toLowerCase()) ||
+        author.email.viewValue.toLowerCase().includes(filter.toLowerCase()) ||
+        (author.books.arr.slice().reduce(foldUntilTrue, false))
+
+      );
+    }
+
+    return { keys, data, displayedColumns, colStyle, filterInputPlaceHolder, filterPredicate }
   }
 
   private _ngUnsubscribe$: Subject<void> = new Subject<void>();

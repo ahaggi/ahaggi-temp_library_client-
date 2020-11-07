@@ -4,21 +4,21 @@ import { Observable, of, merge, Subject } from 'rxjs';
 import { distinctUntilChanged, map, startWith, takeUntil, toArray } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-shared-select',
-  templateUrl: './shared-select.component.html',
-  styleUrls: ['./shared-select.component.css']
+  selector: 'app-shared-list-select',
+  templateUrl: './shared-list-select.component.html',
+  styleUrls: ['./shared-list-select.component.css']
 })
-export class SharedSelectComponent implements OnInit, OnDestroy {
+export class SharedListSelectComponent implements OnInit, OnDestroy {
 
   @Input()
-  payload: SharedSelectOptionPayload;
+  payload: SlsPayload;
 
-  filteredOptionsObs$: Observable<SharedSelectOption[]>;
+  filteredOptionsObs$: Observable<SlsOption[]>;
 
-  selectedOptions: SharedSelectOption[];
+  selectedOptions: SlsOption[];
 
   filterController = new FormControl();
-
+  filterInputPlaceholder: string = "Filter the list.."
   private _ngUnsubscribe$: Subject<void> = new Subject<void>();
 
   constructor() { }
@@ -35,7 +35,7 @@ export class SharedSelectComponent implements OnInit, OnDestroy {
 
     if (changes.hasOwnProperty('payload')) {
       this.payload = changes['payload'].currentValue;
-      this.selectedOptions = this.selectedOptions || []
+      this.selectedOptions = []
       this._init()
     }
   }
@@ -56,6 +56,8 @@ export class SharedSelectComponent implements OnInit, OnDestroy {
   _init() {
     // Edeg usecase: what if the value of listOfAllUsers been updated, while the user filling the form?
     // ...
+    if (this.payload.filterInputPlaceholder)
+      this.filterInputPlaceholder = this.payload.filterInputPlaceholder
 
     this.payload.list.forEach((option => {
       if (option.formControllerBoolean.value) this.selectedOptions.push(option)
@@ -119,16 +121,18 @@ export class SharedSelectComponent implements OnInit, OnDestroy {
 
 
 
-export type SharedSelectOption = {
+export type SlsOption = {
   uniqueValue: string;
   viewValue: { fst: string, snd: string };
   formControllerBoolean: FormControl;
 }
 
-export type SharedSelectOptionPayload = {
-  list: SharedSelectOption[],
+export type SlsPayload = {
+  list: SlsOption[],
   formArray: FormArray,
-  parentForm:FormGroup,
-  title?:string,
-  msgToDispaly?:string,
+  parentForm: FormGroup,
+  title?: string,
+  msgToDispaly?: string,
+  filterInputPlaceholder?: string;
+
 }

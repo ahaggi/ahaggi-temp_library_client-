@@ -1,0 +1,7 @@
+.container{
+    display: flex
+}
+
+.container mat-form-field{
+    flex-grow: 1
+}

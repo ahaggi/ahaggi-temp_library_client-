@@ -12,16 +12,6 @@ export const updateBookMut = gql`
 mutation ($id:String!, $data: _BookUpdateInput!) {
   updateBook(where: { id: $id }, data: $data) {
     id
-    title
-    pages
-    chapters
-    price
-    description
-    imgUri
-    storage{id quantity borrowedQuantity}
-    available
-    booksToAuthors{id author{id name about imgUri}}
-    booksToReaders{ id  borrowDate  returnDate  returned reader{id name imgUri}} 
   }
 }
 `;
@@ -30,16 +20,6 @@ export const postBookMut = gql`
 mutation ($data: _BookCreateInput!) {
   createBook( data: $data ) {
     id
-    title
-    pages
-    chapters
-    price
-    description
-    imgUri
-    storage{id quantity borrowedQuantity}
-    available
-    booksToAuthors{id author{id name about imgUri}}
-    booksToReaders{ id  borrowDate  returnDate  returned reader{id name imgUri}}  
   }
 }
 `;
@@ -48,11 +28,18 @@ mutation ($data: _BookCreateInput!) {
 export const deleteBookMut = gql`
 mutation deleteBook($id: String!) {
   deleteBook(where: { id: $id }) {
-    title
+    id
   }
 }
 `;
 
+export const deleteBooksToReadersMut = gql`
+mutation deleteBooksToReaders($id: String!) {
+  deleteBooksToReaders(where: { id: $id }) {
+    id
+  }
+}
+`;
 
 
 
@@ -63,16 +50,6 @@ export const updateAuthorMut = gql`
 mutation ($id:String!, $data: _AuthorUpdateInput!){
   updateAuthor(where: { id: $id }, data: $data) {
     id
-    name
-    email
-    about
-    imgUri
-    booksToAuthors {
-      id
-      book {
-        id
-      }
-    }
   }
 }
 `
@@ -82,12 +59,6 @@ export const postAuthorMut = gql`
 mutation ($data: _AuthorCreateInput!) {
   createAuthor(data:$data){
     id
-    name
-    email
-    about
-    imgUri
-    booksToAuthors{id book { id }}
-    
   }
 }
 `
@@ -104,15 +75,6 @@ export const updateReaderMut = gql`
                   mutation ($id:String!, $data: _ReaderUpdateInput!){
                     updateReader(where: { id: $id }, data: $data) {
                       id
-                      name
-                      email
-                      imgUri
-                      booksToReaders {
-                        id
-                        book {
-                          id
-                        }
-                      }
                     }
                   }
 `
@@ -121,10 +83,6 @@ export const postReaderMut = gql`
                   mutation ($data: _ReaderCreateInput!) {
                     createReader(data:$data){
                       id
-                      name
-                      email
-                      imgUri
-                      booksToReaders{id book { id }}
                     }
                   }
 `

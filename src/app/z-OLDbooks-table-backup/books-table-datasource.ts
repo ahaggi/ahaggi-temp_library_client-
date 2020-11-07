@@ -54,7 +54,7 @@ export class BooksTableDataSource extends MatTableDataSource<BooksItem> {
           console.log(c)
           this.isLoadingFailed = true;
           return of([] as BooksItem[])}),
-        finalize(() => this.isLoading = false)
+        // finalize(() => this.isLoading = false) wouldn't work with "watchQuery" without using for ex. "take(1)" to close the stream
       )
       .subscribe(books => {
         this.data = books;

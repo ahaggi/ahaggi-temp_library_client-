@@ -1,0 +1,50 @@
+<div class="container">
+    <ng-container [formGroup]="formGroup_SFSelect">
+        <mat-form-field appearance="fill" >
+            <mat-label>{{payload.optionsLabel}}</mat-label>
+            <mat-select formControlName="selectedOption">
+                <input style="height: 50px;" matInput placeholder={{payload.filterPlaceholder}}
+                    [formControl]="_filterController" autocomplete="off">
+                <mat-option *ngFor="let option of filteredOptionsObs$ | async" [value]="option.uniqueValue">
+                    {{option.viewValue}}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="formGroup_SFSelect.controls.selectedOption.hasError('required')">
+                This field is required
+            </mat-error>
+        </mat-form-field>
+    </ng-container>
+    
+</div>
+<!-- 
+
+<ng-container *ngIf="payload?.parentForm?.formGroup; then  partOfFrom; else standAlone">
+</ng-container>
+
+<ng-template #partOfFrom>
+    <ng-container [formGroup]="payload?.parentForm?.formGroup">
+        <mat-form-field appearance="fill">
+            <mat-label>{{payload.optionsLabel}}</mat-label>
+            <mat-select formControlName="payload?.parentForm?.selectFormControllerName">
+                <input style="height: 50px;" matInput placeholder="Filter By QWEQWEQWE Only...."
+                    [formControl]="_filterController">
+                <mat-option *ngFor="let option of filteredOptionsObs$ | async" [value]="option.uniqueValue">
+                    {{option.viewValue}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </ng-container>
+</ng-template>
+
+<ng-template #standAlone>
+    <mat-form-field appearance="fill">
+        <mat-label>{{payload.optionsLabel}}</mat-label>
+        <mat-select>
+            <input style="height: 50px;" matInput placeholder="Filter By QWEQWEQWE Only...."
+                [formControl]="_filterController">
+            <mat-option *ngFor="let option of filteredOptionsObs$ | async" [value]="option.uniqueValue">
+                {{option.viewValue}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</ng-template> -->

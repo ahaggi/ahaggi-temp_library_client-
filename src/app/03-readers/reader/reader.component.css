@@ -1,31 +1,104 @@
-.form-container{
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin-top: 10%;
-    margin-left: 10%;
-}
-
-.input-feilds-container{
-    margin-left: 20px;
-    display: flex; 
-    flex-direction:column;
-    flex-basis:  50%
-}
-
-
-
-
 
 
 .container{
+  margin: 0 auto ;
+  width: 60vw;
+  min-height: 80vh;
+  height: 100%;
+  padding: 50px 20px;
+  background-color: rgb(255, 255, 255);
+}
 
+.edit-button-container{
+  display: flex;
+  justify-content: flex-end;
+  background-color: rgb(235, 41, 41);
+
+}
+
+.sections-container{
+  display: flex;
+  align-items: center;
+  padding-bottom: 40px;
+  background-color: rgb(232, 235, 41);
+
+}
+
+.section-l{
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   width: 20vw;
+   background-color: rgb(41, 235, 73);
+
+}
+
+.section-r{
+  display: flex;
+  flex-direction: column;
+  width: 50vw;
+  height: 100%;
+  background-color: rgb(41, 219, 235);
+
+}
+
+.round-image-container {
+  display: flex;
+  justify-content: center;
+  width: 128px;
+  height: 128px;
+  overflow: hidden;
+  border-radius: 50%;
+  background-color: tomato;
+}
+
+.reader-name-section{
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+  align-self: flex-start;
+}
+
+
+.personal-info-container{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin: 20px 0 20px 0;
+  background-color: rgb(58, 65, 131);
+}
+
+.personal-info-col{
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(126, 131, 58);
+}
+
+
+.personal-info-field{
+  display: flex;
+  align-items: baseline;
+  min-width: 250px;
+  background-color: rgb(42, 230, 104);
+}
+.add-padding-l{
+  padding-left: 10px;
+}
+
+@media only screen and (max-width: 600px) {
+  .sections-container{
+      flex-direction: column;
+      align-items: center;
+      background-color: rgb(41, 44, 235);
+
+  }
+  
+
+}
+/* .container{
   display: flex; 
   flex-direction:column;
   justify-content:flex-start
-
 }
 
 .personal-info-container{
@@ -38,76 +111,12 @@
   flex-direction:row;
   align-items:baseline;
   padding-left: 20px;
-
 }
 
 .personal-info-field p {
   margin-left: 30px;
-}
+} */
 
 
 
 
-
-
-
-
-
-
-
-.borrowed-books-list{
-  width: 700px;
-  max-height: 300px;
-  overflow-y: scroll;
-  overflow-x: visible;
-  }
-    .borrowed-books-list ol{
-  list-style: none;
-  *list-style: decimal;
-  font-size: 15px;
-  font-family: 'Raleway', sans-serif;
-  padding: "10px";
-  margin-bottom: 4em;
-
-  }
-  .borrowed-books-list li{
-  display: flex;
-  flex-direction: column;
-  width: 80%;
-  
-  padding: .4em .4em .4em 2em;
-  margin: .5em;
-  background: darkgray;
-  color: #000;
-  text-decoration: none;
-  -moz-border-radius: .3em;
-  -webkit-border-radius: .3em;
-  border-radius: 10em;
-  transition: all .2s ease-in-out;
-  }
-  .borrowed-books-list a {
-    font-size: 1.2em;
-    color: #000;
-
-  }
-  .borrowed-books-list li:hover{
-  background: #d6d4d4;
-  text-decoration:none;
-  transform: scale(1.1);
-  }
-
-
-  .borrowed-books-list .returned {
-    background: rgb(255, 75, 75) ;
-    color: white ;
-}
-.borrowed-books-list .returned  li:hover{
-  background: rgb(255, 125, 125) ;
-  text-decoration:none;
-  transform: scale(1.1);
-  }
-
-
-h3 {
-  font-weight: bold;
-}

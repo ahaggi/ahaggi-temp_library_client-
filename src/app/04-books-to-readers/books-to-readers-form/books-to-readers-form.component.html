@@ -1,0 +1,57 @@
+<div class="container">
+
+    <ng-template [ngIf]="isLoading" [ngIfElse]="container">
+        <div class="loading-shade">
+            <mat-spinner></mat-spinner>
+        </div>
+    </ng-template>
+
+    <ng-template #container>
+        <ng-template [ngIf]="isLoadingFailed" [ngIfElse]="form">
+            <h3> Loading failure..</h3>
+        </ng-template>
+
+        <ng-template #form>
+            <form [formGroup]="formGroup" #ngForm="ngForm" (ngSubmit)="onSubmit()">
+                <div class="form-container">
+
+                    <app-shared-filtered-select [payload]="sharedFilteredSelectPayload"
+                        formControlName="selectedOptionId"></app-shared-filtered-select>
+                    <!-- <mat-error *ngIf="this.formGroup.controls.selectedOptionId.hasError('invalidSubForm')">
+                    {{this.formGroup.controls.selectedOptionId?.errors?.invalidSubForm?.message}}
+                </mat-error> -->
+
+                    <div formGroupName="borrowPeriod">
+                        <mat-form-field>
+                            <mat-label>Enter a date range</mat-label>
+                            <mat-date-range-input [rangePicker]="picker" [min]="minDateRange" [max]="maxDateRange">
+                                <input matStartDate matInput placeholder="Start date" formControlName="borrowDate">
+                                <input matEndDate matInput placeholder="End date" formControlName="returnDate">
+                            </mat-date-range-input>
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-date-range-picker #picker></mat-date-range-picker>
+                            <mat-error *ngIf="
+                            formGroup.controls.borrowPeriod.controls.returnDate.hasError('required') ||
+                            formGroup.controls.borrowPeriod.controls.borrowDate.hasError('required')"
+                            >
+                                This field is required
+                            </mat-error>
+
+                        </mat-form-field>
+                    </div>
+
+
+                    <div class="buttons-container">
+                        <button mat-stroked-button color="primary" (click)='hideBTRform()'>Cancel</button>
+                        <button mat-raised-button color="primary" type="submit"
+                            [disabled]="formGroup.pristine">Submit</button>
+                    </div>
+
+                    <!-- <pre>{{formGroup.value | json}}</pre> -->
+
+                </div>
+
+            </form>
+        </ng-template>
+    </ng-template>
+</div>

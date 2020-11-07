@@ -4,6 +4,7 @@ import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { of, Subject } from 'rxjs';
 import { catchError, map, takeUntil } from 'rxjs/operators';
+import { getAuthorByIDQry } from 'src/app/util/queriesDef';
 
 import { _CardDetails } from '../../0-shared-components/card/shared-card.component'
 import { _PaginatedCardsPayload } from '../../0-shared-components/shared-paginated-cards/shared-paginated-cards.component'
@@ -35,7 +36,7 @@ export class AuthorComponent implements OnInit {
     const id: string = this.route.snapshot.paramMap.get('id');
     this.apollo.watchQuery<_Author>({
       variables: { id: id },
-      query: getAuthorQry,
+      query: getAuthorByIDQry,
 
     })
       .valueChanges
@@ -65,7 +66,7 @@ export class AuthorComponent implements OnInit {
         this.author.books = author?.booksToAuthors?.map((bta) => {
           //_CardDetails  {header:{title:"wer" ,avatar:"" , subtitle:"" } , content:"content" , actionButtons:[]}
           let cardDetails: _CardDetails = {};
-          cardDetails.header = { title: bta.book.title, subtitle: "sadf sadf", img: loadImageFromStorage(bta.book.imgUri, ImgCategory.BOOK), title_routerLink: `/book/${bta.book.id}` };
+          cardDetails.header = { title: bta.book.title, subtitle: bta.book.isbn, img: loadImageFromStorage(bta.book.imgUri, ImgCategory.BOOK), title_routerLink: `/book/${bta.book.id}` };
           cardDetails.content = bta.book.description
           return cardDetails;
         })
@@ -79,9 +80,14 @@ export class AuthorComponent implements OnInit {
         // The list of cards in this case are an instance of the component "SharedCardComponent"
         this.booksCards = {
           cards: this.author.books,
-          filterPredicate: (readerCard, filter: string): boolean => {
-            return readerCard.header.title.toLowerCase().includes(filter.toLowerCase());
-          }
+          filterPredicate: (bookCard, filter: string): boolean => {
+            let term = filter.toLowerCase()
+            return (
+              bookCard.header.title.toLowerCase().includes(term) ||
+              bookCard.header.subtitle.includes(term)
+            )
+          },
+          filterInputPlaceholder:"Filter by book's Title or ISBN.."
         }
 
 
@@ -96,6 +102,9 @@ export class AuthorComponent implements OnInit {
     this._ngUnsubscribe$.complete();
   }
 
+  hasBooks(){
+    return this.booksCards.cards && this.booksCards.cards.length != 0
+  }
 }
 
 type _Author = {
@@ -108,36 +117,6 @@ type _Author = {
 }
 
 
-const getAuthorQry = gql
-  `
-  query getAuthorQry($id:String!) {
-    author: getAuthorByID(id: $id) {
-      id
-      name
-      email
-      about
-      imgUri
-      booksToAuthors {
-        id
-        book {
-          id
-          title
-          pages
-          chapters
-          price
-          description
-          imgUri
-          booksToReaders {
-            reader {
-              name
-            }
-          }
-        }
-      }
-    }
-  }
-  
-`
-  ;
+
 
 

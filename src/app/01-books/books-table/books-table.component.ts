@@ -53,74 +53,97 @@ export class BooksTableComponent implements OnInit {
           this.isLoadingFailed = true;
           return of([] as _BookCells[])
         }),
-        finalize(() => this.isLoading = false)
+        // finalize(() => this.isLoading = false) wouldn't work with "watchQuery" without using for ex. "take(1)" to close the stream
       )
       .subscribe(books => {
-
-        let _data = this.formatData(books)
-        let _temp_displayedCols = (Object.keys(_data[0]));
-
-        let colStyling = {
-          id: { flexGrow: 1 },
-          title: { flexGrow: 5 },
-          pages: { flexGrow: 1 },
-          chapters: { flexGrow: 1 },
-          price: { flexGrow: 1 },
-          authors: { flexGrow: 3 },
-          storage: { flexGrow: 1 },
-          imgUri: { flexGrow: 1 },
-          bottun: { flexGrow: 1 },
-        }
-
-        this.payload = {
-          data: _data,
-          displayedColumns: _temp_displayedCols,
-          colStyling: colStyling,
-          filterInputPlaceHolder: "Filter By Title or an Author's Name Only....",
-
-          filterPredicate: (book, filter: string): boolean => {
-            // take at more efficient sol at authors-table.component.ts
-            let reducer = (acc, aut) => acc || aut.viewValue.toLowerCase().includes(filter.toLowerCase())
-            return (
-              book.title.viewValue.toLowerCase().includes(filter.toLowerCase()) ||
-              (book.authors.arr.reduce(reducer, false))
-            );
-          }
-
-        }
+        this.payload = this.createPayload(books)
         this.isLoading = false;
-
-
       });
 
   }
 
-  formatData(books): _BookCells[] {
+  createPayload(books): Payload<_BookCells> {
 
-    let cells = books.map((elm) => {
+    let data = books.map((elm) => {
       let tempAuthors = elm?.booksToAuthors?.map(({ author: { id, name } }) => { return { viewValue: name, routerLink: `/author/${id}` } });
       let tempImg: sharedTableCellImg = { alt: elm?.title, src: loadImageFromStorage(elm?.imgUri, ImgCategory.BOOK), height: "48", width: "48", _kind: sharedTableCellKind.IMAGE }
 
       let book: _BookCells = {
         id: { representValue: elm?.id, _kind: sharedTableCellKind.INDEX },
         imgUri: tempImg,
-        title: { viewValue: elm?.title, _kind: sharedTableCellKind.TEXT, routerLink: `/book/${elm?.id}` },
+        title: { viewValue: `${elm?.title}\n${elm?.isbn}`, _kind: sharedTableCellKind.TEXT, routerLink: `/book/${elm?.id}` },
+        // isbn: { viewValue: elm?.isbn, _kind: sharedTableCellKind.TEXT, routerLink: `/book/${elm?.id}` },
         authors: { arr: tempAuthors, _kind: sharedTableCellKind.CHIP_LIST },
         storage: { viewValue: elm?.storage?.quantity, _kind: sharedTableCellKind.TEXT },
+        pages: { viewValue: elm?.pages, _kind: sharedTableCellKind.TEXT },
+        chapters: { viewValue: elm?.chapters, _kind: sharedTableCellKind.TEXT },
+        price: { viewValue: elm?.price, _kind: sharedTableCellKind.TEXT },
+        bottun: { viewValue: "Delete!", _kind: sharedTableCellKind.BUTTON },
+
       };
-      if (this.mode !== MODE.SUMMARIZED) {
-        book = {
-          ...book,
-          pages: { viewValue: elm?.pages, _kind: sharedTableCellKind.TEXT },
-          chapters: { viewValue: elm?.chapters, _kind: sharedTableCellKind.TEXT },
-          price: { viewValue: elm?.price, _kind: sharedTableCellKind.TEXT },
-          bottun: { viewValue: "Delete!", _kind: sharedTableCellKind.BUTTON },
-        }
-      }
       return book;
     })
-    console.log(cells)
-    return cells;
+
+    // NOTE: keys ordering determine which columns are shown and the colomns' ordering inside the table
+    let keys = [
+      "id",
+      "imgUri",
+      "title",
+      // "isbn",
+      "authors",
+      "storage"];
+    if (this.mode !== MODE.SUMMARIZED) {
+      keys = [
+        ...keys,
+        "pages",
+        "chapters",
+        "price",
+        "bottun",
+
+      ]
+    }
+
+
+    let displayedColumns = {
+      id: "Nr.",
+      title: "Title",
+      // isbn: "ISBN",
+      pages: "Pages",
+      chapters: "Chapters",
+      price: "Price",
+      authors: "Authors' name",
+      storage: "Quantity",
+      imgUri: " ",
+      bottun: " ",
+    }
+
+    let colStyle = {
+      id: { flexGrow: 1 },
+      title: { flexGrow: 3 },
+      // isbn: { flexGrow: 2 },
+      pages: { flexGrow: 1 },
+      chapters: { flexGrow: 1 },
+      price: { flexGrow: 1 },
+      authors: { flexGrow: 3 },
+      storage: { flexGrow: 1 },
+      imgUri: { flexGrow: 1 },
+      bottun: { flexGrow: 1 },
+    }
+
+    let filterInputPlaceHolder = "Filter by Title, ISBN or an Author's Name Only....";
+
+    let filterPredicate = (book, filter: string): boolean => {
+      // take at more efficient sol at authors-table.component.ts
+      let term = filter.toLowerCase()
+      let reducer = (acc, aut) => acc || aut.viewValue.toLowerCase().includes(term)
+      return (
+        book.title.viewValue.toLowerCase().includes(term) ||
+        book.isbn.viewValue.toLowerCase().includes(term) ||
+        (book.authors.arr.reduce(reducer, false))
+      );
+    }
+
+    return { keys, data, displayedColumns, colStyle, filterInputPlaceHolder, filterPredicate };
   }
 
   deleteElm(id) {
@@ -136,10 +159,10 @@ export class BooksTableComponent implements OnInit {
     }).pipe(
       takeUntil(this._ngUnsubscribe$),
     )
-    
-    .subscribe((v: any) => {
-      console.log(v.data.deleteBook.title)
-    })
+
+      .subscribe((v: any) => {
+        console.log(v.data.deleteBook.title)
+      })
   }
 
 
@@ -166,6 +189,7 @@ interface _Query {
 export type _BookCells = {
   id?: sharedTableCellIndex;
   title?: sharedTableCellText;
+  // isbn?:sharedTableCellText;
   pages?: sharedTableCellText;
   chapters?: sharedTableCellText;
   price?: sharedTableCellText;

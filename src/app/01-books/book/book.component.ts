@@ -4,12 +4,12 @@ import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { of, Subject } from 'rxjs';
 import { catchError, map, takeUntil } from 'rxjs/operators';
-import { getBookQry } from 'src/app/util/queriesDef';
+import { getBookByIDQry } from 'src/app/util/queriesDef';
 
 
 import { _CardDetails } from '../../0-shared-components/card/shared-card.component'
 import { _PaginatedCardsPayload } from '../../0-shared-components/shared-paginated-cards/shared-paginated-cards.component'
-import { loadImageFromStorage, ImgCategory } from '../../util/util'
+import { loadImageFromStorage, ImgCategory, formatDateAndTime } from '../../util/util'
 
 
 
@@ -23,6 +23,7 @@ export class BookComponent implements OnInit {
   book: _Book = {
     id: "",
     title: "",
+    isbn: "",
     pages: 0,
     chapters: 0,
     storage: {},
@@ -44,18 +45,20 @@ export class BookComponent implements OnInit {
   ) {
   }
 
+  BTRformVisible = false
+  showBTRform(bool) {
+    this.BTRformVisible = bool
+  }
+
   ngOnInit(): void {
     this.getBook()
   }
-
-
-
 
   getBook(): void {
     const id: string = this.route.snapshot.paramMap.get('id');
     this.apollo.watchQuery<_Book>({
       variables: { id: id },
-      query: getBookQry,
+      query: getBookByIDQry,
     })
       .valueChanges
       .pipe(
@@ -76,6 +79,7 @@ export class BookComponent implements OnInit {
 
         this.book.id = book.id
         this.book.title = book.title
+        this.book.isbn = book.isbn
         this.book.pages = book.pages
         this.book.chapters = book.chapters
         this.book.price = book.price
@@ -97,8 +101,10 @@ export class BookComponent implements OnInit {
         // instead of using "this.book.readers" in this component's template, it will be assigned to one of the "this.readersCards" properties.
         this.book.readers = book.booksToReaders.map((btr) => {
           //_CardDetails  {header:{title:"wer" ,avatar:"" , subtitle:"" } , content:"content" , actionButtons:[]}
+          let { date: bd } = formatDateAndTime(btr.borrowDate)
+          let { date: rd } = formatDateAndTime(btr.returnDate)
           let cardDetails: _CardDetails = {};
-          cardDetails.header = { title: btr.reader.name, subtitle: `${btr.borrowDate} - ${btr.returnDate}`, title_routerLink: `/reader/${btr.reader.id}` };
+          cardDetails.header = { title: btr.reader.name, subtitle: `Id: ${btr.reader.costumerId},\n Borrowing's Date: ${bd} - ${rd}`, title_routerLink: `/reader/${btr.reader.id}` };
           return cardDetails;
         })
 
@@ -107,25 +113,45 @@ export class BookComponent implements OnInit {
         // The list of cards in this case are an instance of the component "SharedCardComponent"
         this.authorsCards = {
           cards: this.book.authors,
-          filterPredicate: (readerCard, filter: string): boolean => {
-            return readerCard.header.title.toLowerCase().includes(filter.toLowerCase());
-          }
+          filterPredicate: (authorCard, filter: string): boolean => {
+            return authorCard.header.title.toLowerCase().includes(filter.toLowerCase());
+          },
+          filterInputPlaceholder: "Filter Author's name only.."
+
         }
 
         this.readersCards = {
           cards: this.book.readers,
           filterPredicate: (readerCard, filter: string): boolean => {
-            return readerCard.header.title.toLowerCase().includes(filter.toLowerCase());
-          }
+            let term = filter.toLowerCase()
+            return (
+              readerCard.header.title.toLowerCase().includes(term) ||
+              readerCard.header.subtitle.toLowerCase().includes(term)
+            );
+          },
+          filterInputPlaceholder: "Filter By Reader or Date.."
+
         }
         //------------------------------------------------------------------------------------------------------------------------
       })
   }
 
+  hasReaders(){
+    return this.readersCards.cards && this.readersCards.cards.length != 0
+  }
+
+  hasAuthors(){
+    return this.authorsCards.cards && this.authorsCards.cards.length != 0
+  }
   private _ngUnsubscribe$: Subject<void> = new Subject<void>();
   ngOnDestroy(): void {
     this._ngUnsubscribe$.next();
     this._ngUnsubscribe$.complete();
+  }
+
+
+  removePayload() {
+
   }
 
 }
@@ -133,6 +159,7 @@ export class BookComponent implements OnInit {
 type _Book = {
   id: string;
   title: string;
+  isbn: string;
   pages: number;
   chapters: number;
   storage: any;

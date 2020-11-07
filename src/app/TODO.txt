@@ -1,10 +1,53 @@
 
+Test if the cache save the same query twice if they have diff fields' order in thier resp?
+
+fix the height of cards in book and authors component.
+
+update after mutation:
+  updating-after-a-mutation
+  https://www.apollographql.com/docs/angular/features/cache-updates/#updating-after-a-mutation
+
+  define a custom merge function for * field, so InMemoryCache can safely merge these objects
+    https://stackoverflow.com/a/63167679   
+    https://www.apollographql.com/docs/angular/basics/caching/#inmemorycache
+
+
+Read 
+  We don’t want to build our own spinner into the existing button. Much more we want to use the already existing MatProgressSpinner component from the Angular Library. 
+  https://medium.com/coyo-tech/how-to-add-a-loading-state-to-angular-material-buttons-f0c3272e49a
+
+  Dynamic component loading
+  https://angular.io/guide/dynamic-component-loader
+
+
+
+
+fix ==>  style un-returned book at http://localhost:4211/book
+
+add autocomplete="off" at all <input .. where it is necessary ,,, take a look at shared-filtered-select.component.html
+
+
+create universal filterPlaceHolder!!
+
+
+
+In all of the components 
+    @Input()  payload : it spouse to be accessed just in ngOnChanges, instead of accessing its value at other places and the template.
+    for example take a look at how the flwg components uses payload:
+        -"SharedPaginatedCardsComponent"    OK
+        -"SharedListSelectComponent"        Not-OK
+
+
+
+spinner på alt
+
+app-shared-filtered-select => show err ifExist onSubmit
 
 try soft delete booksToReaders?
 
 // imgUri: [''], imageUri controller to emulate image's change functionality
 
-
+"sadf sadf": AuthorComponent ==> getAuthor(){ .. this.author.books = { .. subtitle: "sadf sadf" ..}}; change subtitle to be co-authors?
 
 check that all sub are unsub in ngDestroy
 
@@ -15,3 +58,37 @@ add this.isLoadingFailed To:
                     BookComponent
                     ReaderComponent
                     AuthorComponent
+
+
+
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    console.log(`(control && control.invalid ${control.invalid} && (control.dirty ${control.dirty} || control.touched ${control.touched} || (isSubmitted ${isSubmitted} && !form.pristine ${!form.pristine})))`)
+    let a = !!(control && control.invalid && (control.dirty || control.touched || (isSubmitted && !form.pristine)))
+    return a;
+  }
+}
+
+
+
+
+
+
+
+
+
+      .pipe(
+      // you can also merge loading assignment into map        
+      tap(result => this.isLoading = result.loading),
+      filter(result => !result.loading),           
+      map(result => (<any>result.data).whateveryourwhattoshow),
+      catchError(err => {
+          // whatever you want to handle error 
+          if (err.graphQLErrors) {      
+              err.graphQLErrors.forEach(e => {...});    
+          }    
+          if (err.networkError) { ... }
+          // default return    return of([]);
+      })
+      )

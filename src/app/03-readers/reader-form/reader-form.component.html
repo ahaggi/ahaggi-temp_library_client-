@@ -27,7 +27,7 @@
                             </ng-template>
                         </div>
                         <div>
-                            <button mat-raised-button color="primary">
+                            <button mat-raised-button color="primary" disabled>
                                 Change Image
                             </button>
                         </div>
@@ -59,27 +59,34 @@
                                 <mat-error *ngIf="formGroup?.controls?.email.hasError('email')">
                                     Invalid email format
                                 </mat-error>
-                                
                                 <mat-error *ngIf="formGroup?.controls?.email.hasError('__errMsg')">
                                     {{formGroup?.controls?.email?.errors['__errMsg']}}
                                 </mat-error>
-
                             </mat-form-field>
                         </div>
-
-
-
-
-<!-- 
-                        <div  *ngIf="booksSelectOptionPayLoad">
-                            <app-shared-select [payload]="booksSelectOptionPayLoad" [isRequiredFormField]="true">
-                            </app-shared-select>
-                            <mat-error *ngIf="ngForm.submitted && formGroup?.controls?.allBooks.hasError('__errMsg')">
-                                {{formGroup?.controls?.allBooks?.errors['__errMsg']}}
-                            </mat-error>
-
-                        </div> -->
-
+                        
+                        <div class="input-feilds-container">
+                            <mat-form-field appearance="standard" class="_grow">
+                                <mat-label for="address">address</mat-label>
+                                <input id="address" matInput type="text" formControlName="address">
+                                <mat-error *ngIf="formGroup?.controls?.address.hasError('required')">
+                                    This field is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="input-feilds-container">
+                            <mat-form-field appearance="standard" class="_grow">
+                                <mat-label for="phone">Phone Nr:</mat-label>
+                                <input id="phone" matInput type="text" formControlName="phone">
+                                <mat-error *ngIf="formGroup?.controls?.phone.hasError('required')">
+                                    This field is required
+                                </mat-error>
+                                <mat-error *ngIf="formGroup?.controls?.phone.hasError('pattern')">
+                                    Invalid phone nr. Please enter 8 digits nr.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        
 
                         <div class="buttuns-container">
                             <button mat-stroked-button color="primary" (click)='goBack()'>Cancel</button>

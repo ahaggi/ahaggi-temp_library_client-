@@ -1,65 +1,82 @@
-<div>
+<ng-template [ngIf]="reader" [ngIfElse]="loadingFailed">
 
-
-    <ng-template class="container" [ngIf]="reader" [ngIfElse]="loadingFailed">
+    <div class="container">
 
         <div class="edit-button-container">
-            <button mat-raised-button color="primary" [routerLink]="['/editreader/' , reader.id]"> 
-                <mat-icon >edit</mat-icon>
+            <button mat-raised-button color="primary" [routerLink]="['/editreader/' , reader.id]">
+                <mat-icon>edit</mat-icon>
             </button>
         </div>
 
-        <div class="personal-info-container">
-            <img [src]="reader.imgUri" width="128" height="150">
-            <div>
-                <h2>Personal Info:</h2>
-                <div class="personal-info-field">
-                    <h3>Name : </h3>
-                    <p>{{reader.name}}</p>
+        <div class="sections-container">
+
+            <div class="section-l">
+                <div class="round-image-container">
+                    <img  [src]="reader.imgUri" width="128" height="150">
                 </div>
-                <div class="personal-info-field">
-                    <h3>Email: </h3>
-                    <p>{{reader.email}}</p>
+                <button mat-raised-button color="primary" (click)="showBTRform(true)" [disabled]="BTRformVisible">
+                    Issue a borrow <mat-icon> playlist_add_check</mat-icon>
+                </button>
+            </div>
+
+            <div class="section-r">
+                <div class="reader-name-section">
+                    <h2 style="margin-bottom: 0;"><b>{{reader.name}}</b></h2>
+                    <p >{{reader.costumerId}}</p>
                 </div>
             </div>
 
         </div>
-        <ng-container *ngTemplateOutlet="booksToReaders"></ng-container>
-    </ng-template>
 
+        <div class="sections-container">
 
-    <ng-template #booksToReaders>
-        <h3> Borrowed Books: </h3>
-        <mat-form-field appearance="fill">
-            <mat-label>Sort by:</mat-label>
-            <mat-select>
-                <mat-option *ngFor="let option of booksToReadersOptions; let i = index" [value]="option.value"
-                    (click)="sortBorrowingInfoBy(option.value)" [selected]="i === 0">
-                    {{option.viewValue}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
+            <div class="section-l">
+                <ng-template [ngIf]="BTRformVisible">
+                    <app-books-to-readers-form [id]="reader.id" [MODE]="1" (cancelRequest)="showBTRform($event)">
+                    </app-books-to-readers-form>
+                </ng-template>
+            </div>
 
-        <div class="borrowed-books-list">
-            <ol>
-                <li *ngFor="let borrow of reader.booksToReaders  ; let i = index"
-                    [ngClass]="{'returned':!borrow.returned}" [attr.data-index]="i">
-                    <a [routerLink]="['/book', borrow.book.id]">
-                        <span>Book title: {{borrow.book.title}} , </span>
-                    </a>
-                    <span>Borrowed at: {{borrow.borrowDate}} , </span>
-                    <span>Returned at:{{ borrow.returned ? borrow.returnDate : '-'}}</span>
-                </li>
-            </ol>
+            <div class="section-r">
+                <h3>Personal Info:</h3>
+                <div class="personal-info-container">
+                    <div class="personal-info-col">
+                        <div class="personal-info-field">
+                            <p>Email: </p>
+                            <p class="add-padding-l">{{reader.email}}</p>
+                        </div>
+                        <div class="personal-info-field">
+                            <p>Phone: </p>
+                            <p class="add-padding-l">{{reader.phone || '-'}}</p>
+                        </div>
+                    </div>
+
+                    <div class="personal-info-col">
+                        <div class="personal-info-field">
+                            <p>Address: </p>
+                            <p class="add-padding-l">{{reader.address || '-'}}</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            
+
         </div>
+        <ng-container *ngTemplateOutlet="booksToReaders"></ng-container>
 
-    </ng-template>
-
-
-
-    <ng-template #loadingFailed>
-        <h3> Loading failure..</h3>
-    </ng-template>
+    </div>
 
 
-</div>
+
+
+</ng-template>
+
+<ng-template #booksToReaders>
+    <h3> Borrowed Books: </h3>
+    <app-reader-btr-table [readerId]="reader.id" [booksToReaders]="reader.booksToReaders"></app-reader-btr-table>
+</ng-template>
+
+<ng-template #loadingFailed>
+    <h3> Loading failure..</h3>
+</ng-template>

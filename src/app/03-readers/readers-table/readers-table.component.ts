@@ -32,7 +32,7 @@ export class ReadersTableComponent implements OnInit {
     })
       .valueChanges
       .pipe(
-      takeUntil(this._ngUnsubscribe$),
+        takeUntil(this._ngUnsubscribe$),
 
         map(res => res.data.readers),
         catchError((err, c) => {
@@ -41,49 +41,72 @@ export class ReadersTableComponent implements OnInit {
           this.isLoadingFailed = true;
           return of([] as _ReaderCells[])
         }),
-        finalize(() => this.isLoading = false)
+        // finalize(() => this.isLoading = false) wouldn't work with "watchQuery" without using for ex. "take(1)" to close the stream
       )
       .subscribe(readers => {
-
         console.log(readers)
-
-        let _data = this.formatData(readers)
-        let _temp_displayedCols = Object.keys(_data[0])
-        let colStyling = {
-          id: { flexGrow: 0.5 },
-          name: { flexGrow: 2 },
-          email: { flexGrow: 2 },
-          imgUri: { flexGrow: 1 },
-        }
-
-        this.payload = {
-          data: _data,
-          displayedColumns: _temp_displayedCols,
-          colStyling: colStyling,
-          filterInputPlaceHolder: "Filter By Reader's Name or Email Only....",
-          filterPredicate: (data, filter: string): boolean => {
-            return (
-              data.name.viewValue.toLowerCase().includes(filter.toLowerCase()) ||
-              data.email.viewValue.toLowerCase().includes(filter.toLowerCase())
-            );
-          }
-        }
+        this.payload = this.createPayload(readers)
         this.isLoading = false;
       });
   }
-  formatData(readers): _ReaderCells[] {
-    let cells = readers.map((elm) => {
-      let tempImg = { alt: elm?.name, src: loadImageFromStorage(elm?.imgUri, ImgCategory.PERSON), height: "48", width: "48", _kind: sharedTableCellKind.IMAGE }
+
+
+  createPayload(readers): Payload<_ReaderCells> {
+
+    let data = readers.map((elm) => {
+      // let tempImg = { alt: elm?.name, src: loadImageFromStorage(elm?.imgUri, ImgCategory.PERSON), height: "48", width: "48", _kind: sharedTableCellKind.IMAGE }
 
       let reader: _ReaderCells = {
         id: { representValue: elm?.id, _kind: sharedTableCellKind.INDEX },
-        imgUri: tempImg,
+        // imgUri: tempImg,
         name: { viewValue: elm?.name, _kind: sharedTableCellKind.TEXT, routerLink: `/reader/${elm?.id}` },
+        costumerId: { viewValue: elm?.costumerId, _kind: sharedTableCellKind.TEXT },
         email: { viewValue: elm?.email, _kind: sharedTableCellKind.TEXT },
+        address: { viewValue: elm?.address, _kind: sharedTableCellKind.TEXT },
+        phone: { viewValue: elm?.phone, _kind: sharedTableCellKind.TEXT },
       };
       return reader;
     })
-    return cells
+
+    // NOTE: keys ordering determine which columns are shown and the colomns' ordering inside the table
+    let keys = [
+      "id",
+      "name",
+      "costumerId",
+      "email",
+      "address",
+      "phone",
+      // "imgUri",
+    ]
+
+    let displayedColumns = {
+      id: "Nr.",
+      name: "Name",
+      costumerId:"costumer Id",
+      email: "Email",
+      address:"Address",
+      phone:"Phone nr.",
+
+      // imgUri: " ",
+    }
+    let colStyle = {
+      id: { flexGrow: 0.5 },
+      name: { flexGrow: 2 },
+      costumerId: { flexGrow: 2 },
+      email: { flexGrow: 1 },
+      address: { flexGrow: 2 },
+      phone: { flexGrow: 1 },
+      // imgUri: { flexGrow: 1 },
+    }
+    let filterInputPlaceHolder = "Filter By Reader's Name or Email Only....";
+    let filterPredicate = (data, filter: string): boolean => {
+      return (
+        data.name.viewValue.toLowerCase().includes(filter.toLowerCase()) ||
+        data.email.viewValue.toLowerCase().includes(filter.toLowerCase())
+      );
+    }
+
+    return { keys, data, displayedColumns, colStyle, filterInputPlaceHolder, filterPredicate }
   }
 
 
@@ -101,8 +124,11 @@ export class ReadersTableComponent implements OnInit {
 export type _ReaderCells = {
   id?: sharedTableCellIndex;
   name?: sharedTableCellText;
+  costumerId: sharedTableCellText;
   email?: sharedTableCellText;
-  imgUri?: sharedTableCellImg;
+  address: sharedTableCellText;
+  phone: sharedTableCellText;
+  // imgUri?: sharedTableCellImg;
 }
 
 

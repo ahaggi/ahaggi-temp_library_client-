@@ -1,3 +1,58 @@
-.personal-image img {
-    border-radius: 50%;
-  } 
+.container{
+  margin: 0 auto ;
+  width: 60vw;
+  min-height: 80vh;
+  height: 100%;
+  padding: 50px 20px;
+  background-color: rgb(255, 255, 255);
+}
+
+.edit-button-container{
+  display: flex;
+  justify-content: flex-end;
+  background-color: rgb(235, 41, 41);
+
+}
+.sections-container{
+  display: flex;
+  align-items: center;
+  padding-bottom: 40px;
+  background-color: rgb(232, 235, 41);
+
+}
+
+.section-l{
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   width: 20vw;
+   background-color: rgb(41, 235, 73);
+
+}
+
+.section-r{
+  display: flex;
+  flex-direction: column;
+  width: 50vw;
+  height: 100%;
+  background-color: rgb(41, 219, 235);
+
+}
+
+.round-image-container {
+  display: flex;
+  justify-content: center;
+  width: 128px;
+  height: 128px;
+  overflow: hidden;
+  border-radius: 50%;
+  background-color: tomato;
+}
+
+.author-name-section{
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+  align-self: flex-start;
+
+}

@@ -8,11 +8,11 @@ import { Location } from '@angular/common';
 
 
 
-import { SharedSelectComponent, SharedSelectOption, SharedSelectOptionPayload } from 'src/app/0-shared-components/shared-select/shared-select.component';
+import { SharedListSelectComponent, SlsOption, SlsPayload } from '../../0-shared-components/shared-list-select/shared-list-select.component';
 import { postAuthorMut, updateAuthorMut } from 'src/app/util/mutationsDef';
 import { getAuthorByEmailQry, getAuthorByIDQry, getAuthorsQry, getBooksQry } from 'src/app/util/queriesDef';
 import { FORM_MODE, ImgCategory, loadImageFromStorage } from 'src/app/util/util';
-import { MyValidators } from 'src/app/util/_Validators';
+import { MyValidators } from 'src/app/util/_validators';
 import { query } from '@angular/animations';
 
 @Component({
@@ -36,10 +36,10 @@ export class AuthorFormComponent implements OnInit {
 
   submitLabel: string = "";
 
-  booksSelectOptionPayLoad: SharedSelectOptionPayload;
+  booksSlsPayLoad: SlsPayload;
 
-  @ViewChild(SharedSelectComponent)
-  private booksSelectComponent: SharedSelectComponent;
+  @ViewChild(SharedListSelectComponent)
+  private booksSelectComponent: SharedListSelectComponent;
 
   constructor(private apollo: Apollo, private formBuilder: FormBuilder, private route: ActivatedRoute, private location: Location) { }
 
@@ -51,8 +51,8 @@ export class AuthorFormComponent implements OnInit {
     this.formGroup = this.formBuilder.group({
 
       name: ['', Validators.required],
-      email: ['',[Validators.required , Validators.email]], 
-      
+      email: ['', [Validators.required, Validators.email]],
+
       about: ['', Validators.required],
 
       // imgUri: [''],
@@ -101,13 +101,13 @@ export class AuthorFormComponent implements OnInit {
 
 
   }
-  setAsyncValidationOnEmail(){
+  setAsyncValidationOnEmail() {
     let emailController = this.formGroup.get('email')
     emailController.setAsyncValidators([MyValidators.emailAlreadyRegisteredValidator(
-     // this.authorToEdit?.email         will be '' if  this.MODE != FORM_MODE.EDIT
-      { errMsg: 'This email is already registered!', apollo:this.apollo , exceptValue:((this.authorToEdit?.email)||'')  , query:getAuthorByEmailQry}
-      )])
-      emailController.updateValueAndValidity()
+      // this.authorToEdit?.email         will be '' if  this.MODE != FORM_MODE.EDIT
+      { errMsg: 'This email is already registered!', apollo: this.apollo, exceptValue: ((this.authorToEdit?.email) || ''), query: getAuthorByEmailQry }
+    )])
+    emailController.updateValueAndValidity()
   }
   getAuthorToUpdate(): Observable<any> {
     return this.apollo.watchQuery<_Author>({
@@ -130,7 +130,7 @@ export class AuthorFormComponent implements OnInit {
 
 
   checkIfEmailIsRegistered = () => {
-    
+
     // edit not exist (all - this editor)
     // create check that not exist              "a@a.com"
     return this.apollo.watchQuery<_Author>({
@@ -168,20 +168,22 @@ export class AuthorFormComponent implements OnInit {
       let isThisBookAuth: boolean = _booksIdOfThisAuthor.indexOf(book?.id) !== -1
       let fc = new FormControl(isThisBookAuth)
       allBooksFormArray.push(fc)
-      let option: SharedSelectOption = {
+      let option: SlsOption = {
         uniqueValue: book?.id,
-        viewValue: { fst: book?.title, snd: book?.description },
+        viewValue: { fst: book?.title, snd: book?.isbn },
         formControllerBoolean: fc
       }
       return option
     })
 
-    this.booksSelectOptionPayLoad = {
+    this.booksSlsPayLoad = {
       parentForm: this.formGroup,
       formArray: allBooksFormArray,
       list: _list,
       title: "Published Books:",
-      msgToDispaly: "Choose which books have been published by this author."
+      msgToDispaly: "Choose which books have been published by this author.",
+      filterInputPlaceholder: "Filter by book's Title or ISBN"
+
     }
   }
 
@@ -233,6 +235,11 @@ export class AuthorFormComponent implements OnInit {
     this.apollo.mutate({
       mutation: updateAuthorMut,
       variables: { id: this.authorId, data: _data },
+      refetchQueries: [{
+        query: getAuthorByIDQry,
+        variables: { id: this.authorId },
+      }],
+
     })
       .pipe(
         takeUntil(this._ngUnsubscribe$),

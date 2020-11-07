@@ -14,11 +14,14 @@ export class SharedPaginatedCardsComponent<T> implements OnInit {
   @Input()
   payload: _PaginatedCardsPayload<T>;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  dataSource: MatTableDataSource<T> = new MatTableDataSource<T>();
+  //this is to extract (the data from this.dataSource) with asyncPipe inside the template, since we will use the dataSource without the "mat-table"
+  obs$: any = this.dataSource.connect();
 
-  dataSource: MatTableDataSource<T>
+  filterInputPlaceholder: string;
 
-  obs$: any;
+  pageSize: number
+  pageSizeOptions: number[]
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {
   }
@@ -29,24 +32,23 @@ export class SharedPaginatedCardsComponent<T> implements OnInit {
     ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked
     https://stackoverflow.com/questions/34364880/expression-has-changed-after-it-was-checked 
     */
-    this.changeDetectorRef.detectChanges();
+    // this.changeDetectorRef.detectChanges();
 
-    this.dataSource = new MatTableDataSource<T>(this.payload.cards);
 
-    this.dataSource.paginator = this.paginator;
-
-    //this is used to extract the data from dataSource inside the template, since we will use the dataSource without the "mat-table"
-    this.obs$ = this.dataSource.connect();
   }
 
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   ngAfterViewInit(): void {
-
-    // this.dataSource.sort = this.sort;
-
-    // If the user changes the sort order, reset back to the first page.
-    // this.sort.sortChange.subscribe(() => this.paginator.firstPage());
+    if (this.dataSource) {
+      setTimeout(() => {
+        this.dataSource.paginator = this.paginator
+      });
+    }
   }
 
+  // @ViewChild(MatPaginator) set matPaginator(mp: MatPaginator) {
+  //   this.dataSource.paginator = mp;
+  // }
 
   ngOnChanges(changes: { [propKey: string]: SimpleChange }) {
     // if (changes['listOfAllOptions'].isFirstChange()) { // Due to initialization by angular
@@ -54,11 +56,18 @@ export class SharedPaginatedCardsComponent<T> implements OnInit {
     // } else {  // due to business logic 
     //   doMoreStuff();
     // }
+    if (changes.hasOwnProperty('payload')) {
 
-    this.payload = changes['payload'].currentValue;
-    if (this.dataSource != null) {
+      this.payload = changes['payload'].currentValue;
+      this.dataSource.data = []
+
       this.dataSource.data = this.payload.cards
+
       this.dataSource.filterPredicate = this.payload.filterPredicate;
+
+      this.filterInputPlaceholder = this.payload.filterInputPlaceholder
+      this.pageSize = this.payload.pageSize || 5
+      this.pageSizeOptions = this.payload.pageSizeOptions
 
     }
   }
@@ -69,13 +78,14 @@ export class SharedPaginatedCardsComponent<T> implements OnInit {
     this.dataSource.filter = filterValue;
   }
 
-   
-
 }
 
 
 
-export type _PaginatedCardsPayload<T>={
+export type _PaginatedCardsPayload<T> = {
   cards: T[];
-  filterPredicate:any;
+  filterPredicate: any;
+  filterInputPlaceholder: string;
+  pageSize?: number,
+  pageSizeOptions?: number[]
 }

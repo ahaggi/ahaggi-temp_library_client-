@@ -27,7 +27,7 @@
                             </ng-template>
                         </div>
                         <div>
-                            <button mat-raised-button color="primary">
+                            <button mat-raised-button color="primary" disabled>
                                 Change Image
                             </button>
                         </div>
@@ -81,9 +81,9 @@
                         </div>
 
 
-                        <div  *ngIf="booksSelectOptionPayLoad">
-                            <app-shared-select [payload]="booksSelectOptionPayLoad" [isRequiredFormField]="true">
-                            </app-shared-select>
+                        <div  *ngIf="booksSlsPayLoad">
+                            <app-shared-list-select [payload]="booksSlsPayLoad" >
+                            </app-shared-list-select>
                             <mat-error *ngIf="ngForm.submitted && formGroup?.controls?.allBooks.hasError('__errMsg')">
                                 {{formGroup?.controls?.allBooks?.errors['__errMsg']}}
                             </mat-error>

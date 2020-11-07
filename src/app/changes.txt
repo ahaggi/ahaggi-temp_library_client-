@@ -1,0 +1,45 @@
+Major Changes:
+    at:
+        books-table.component.ts
+        authors-table.component.ts
+        reader-table.component.ts
+    commented out "finalize"
+    // finalize(() => this.isLoading = false) wouldn't work with "watchQuery" without using for ex. "take(1)" to close the stream
+
+    at: 
+        shared-table.component.ts:
+            - changed the structure for payLoad interface.
+            - add this.keys
+            - displayedColumns: is objuct instead of string[]
+            - colStyling => colStyle
+            - added rowStyle and cellStyle
+            - "this.keys" determine which columns are shown and the colomns' ordering inside the table, i.e. even if a column is populated with data, that column will not be shown iff this.key[someColumn] is undefined
+    at: 
+        books-table.component.ts, 
+        authors-table.component.ts, and
+        reader-table.component.ts:
+            - removed this.formatData(-)
+            - added this.createPayload(-) : it has the responsibility of creating the data-payload that will be sent to "shared-table.component"
+
+    at: 
+        shared-list-select
+            - changed the structure for payLoad interface.
+    at:
+        changes due to adding Book(isbn) + Reader(costumerId, address, phone)
+
+    at:
+        SharedPaginatedCardsComponent
+    
+    generated:
+        books-to-readers-form.component
+        shared-filtered-select
+        drective mat-button-loading.directive.ts  !!Important
+
+    renamed:
+    app-shared-select ==> app-shared-list-select
+     
+    updated the graphql queries to match the changes made at the server in the flwg models:
+    - Book=> isbn
+    - Reader => address phone costumerId
+
+    

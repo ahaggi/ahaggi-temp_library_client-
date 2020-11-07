@@ -1,63 +1,83 @@
-<div>
+<ng-template  [ngIf]="author" [ngIfElse]="loadingFailed">
+
+    <div class="container">
+        <div class="edit-button-container">
+            <button mat-raised-button color="primary" [routerLink]="['/editauthor/' , author.id]">
+                <mat-icon>edit</mat-icon>
+            </button>
+        </div>
 
 
-    <ng-template class="container" [ngIf]="author" [ngIfElse]="loadingFailed">
+        <div class="sections-container">
 
-        <div class="author-details">
-            <div class="edit-button-container">
-                <button mat-raised-button color="primary" [routerLink]="['/editauthor/' , author.id]"> 
-                    <mat-icon >edit</mat-icon>
-                </button>
+            <div class="section-l">
+                <div class="round-image-container">
+                    <img [src]="author.imgUri" width="128" height="150">
+                </div>
             </div>
-    
-            <img class="personal-image" [src]="author.imgUri" width="128" height="150">
-            <div>
-                <h2>Personal Info :</h2>
-                <div class="personal-info-field">
-                    <h3>Name : </h3>
-                    <p>{{author.name}}</p>
-                </div>
-                <!-- <some icon >{{available}}  -->
-                <div class="personal-info-field">
-                    <h3>Email: </h3>
-                    <p>{{author.email}}</p>
-                </div>
 
-                <div class="personal-info-field">
-                    <h3>About: </h3>
-                    <p>{{author.about}}</p>
+            <div class="section-r">
+                <div class="author-name-section">
+                    <h2 style="margin-bottom: 0;"><b>{{author.name}}</b></h2>
+                    <p>{{author.email}}</p>
                 </div>
             </div>
         </div>
 
-        <mat-accordion>
-            <ng-container *ngTemplateOutlet="booksToAuthors"></ng-container>
-        </mat-accordion>
+            <div class="sections-container">
 
-    </ng-template>
+                <div class="section-l">
+
+                </div>
+
+                <div class="section-r">
+                    <h3>About:</h3>
+                    <div class="personal-info-container">
+                        <p>{{author.about}}</p>
+                    </div>
+                    
+                        <ng-container *ngTemplateOutlet="booksToAuthors"></ng-container>
+                
+                </div>
+            </div>
 
 
-
-
-    <ng-template #booksToAuthors>
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    Books
-                </mat-panel-title>
-                <mat-panel-description>
-                    List of this author's Books
-                </mat-panel-description>
-            </mat-expansion-panel-header>
-            <app-shared-paginated-cards [payload]="booksCards"></app-shared-paginated-cards>
-        </mat-expansion-panel>
-    </ng-template>
+    </div>
+</ng-template>
 
 
 
-    <ng-template #loadingFailed>
-        <h3> Loading failure..</h3>
-    </ng-template>
+
+<ng-template #booksToAuthors>
+    <mat-accordion>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Books
+            </mat-panel-title>
+            <mat-panel-description>
+                List of this author's Books
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <ng-container *ngIf="hasBooks(); then booksToAuthorsCards; else emptyBooksToAuthorsCards"></ng-container>
+
+    </mat-expansion-panel>
+</mat-accordion>
+</ng-template>
 
 
-</div>
+<ng-template #booksToAuthorsCards>
+    <div >
+        <app-shared-paginated-cards [payload]="booksCards"></app-shared-paginated-cards>
+    </div>
+</ng-template>
+
+<ng-template #emptyBooksToAuthorsCards>
+    <div class="empty-expansion-panel">
+        <p> This author has not published any books yet. </p>
+    </div>
+</ng-template>
+
+<ng-template #loadingFailed>
+    <h3> Loading failure..</h3>
+</ng-template>

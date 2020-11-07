@@ -13,6 +13,7 @@
 
         <ng-template #form>
             <form [formGroup]="formGroup" #ngForm="ngForm" (ngSubmit)="onSubmit()">
+                <pre>{{formGroup.value | json}}</pre>
 
                 <div class="sections-container">
                     <div class="section-l">
@@ -28,11 +29,10 @@
                             </ng-template>
                         </div>
                         <div>
-                            <button mat-raised-button color="primary">
+                            <button mat-raised-button color="primary" disabled>
                                 Change Image
                             </button>
                         </div>
-
                     </div>
                     <div class="section-r">
                         <div class="input-feilds-container">
@@ -42,6 +42,18 @@
                                 <mat-error *ngIf="allFormControls.title.hasError('required')">
                                     This field is required
                                 </mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="standard" style="padding-left: 10px;">
+                                <mat-label for="isbn">ISBN:</mat-label>
+                                <input id="isbn" matInput type="text" [readonly]="true" formControlName="isbn">
+                                <button mat-icon-button matSuffix type="button"  (click)="scanISBN()" [loading]="generatingISBN">
+                                    <mat-icon>settings_remote</mat-icon>
+                                </button>
+                                <mat-error *ngIf="allFormControls.isbn.hasError('required')">
+                                    Press the above icon to scan the book's ISBN
+                                </mat-error>
+
                             </mat-form-field>
                         </div>
 
@@ -114,10 +126,10 @@
                         </div>
 
 
-                        <div  *ngIf="authorsSelectOptionPayLoad">
-                            <app-shared-select [payload]="authorsSelectOptionPayLoad" [isRequiredFormField]="true">
-                            </app-shared-select>
-                            <mat-error  *ngIf="ngForm.submitted && allFormControls.allAuthors.hasError('__errMsg')">
+                        <div *ngIf="authorsSlsPayload">
+                            <app-shared-list-select [payload]="authorsSlsPayload" [isRequiredFormField]="true">
+                            </app-shared-list-select>
+                            <mat-error *ngIf="ngForm.submitted && allFormControls.allAuthors.hasError('__errMsg')">
                                 {{allFormControls?.allAuthors?.errors['__errMsg']}}
                             </mat-error>
 
@@ -129,9 +141,10 @@
 
                         <div class="buttuns-container">
 
-                            <button mat-stroked-button color="primary" (click)='goBack()' >Cancel</button>
+                            <button mat-stroked-button color="primary" type="button" (click)='goBack()'>Cancel</button>
 
-                            <button mat-raised-button  color="primary" type="submit" [disabled]="formGroup.pristine">{{submitLabel}}</button>
+                            <button mat-raised-button color="primary" type="submit"
+                                [disabled]="formGroup.pristine">{{submitLabel}}</button>
 
 
 

@@ -3,139 +3,143 @@
 
     <div class="container">
         <div class="edit-button-container">
-            <button mat-raised-button color="primary" [routerLink]="['/editbook/' , book.id]"> 
-                <mat-icon >edit</mat-icon>
+            <button mat-raised-button color="primary" [routerLink]="['/editbook/' , book.id]">
+                <mat-icon>edit</mat-icon>
             </button>
         </div>
 
         <div class="sections-container">
             <div class="section-l">
                 <img [src]="book.imgUri" width="128" height="150">
-                <button mat-raised-button color="primary"  [routerLink]="['']"> 
-                    Issue a borrow <mat-icon > playlist_add_check</mat-icon>
+                <button mat-raised-button color="primary" (click)="showBTRform(true)" [disabled]="BTRformVisible">
+                    Issue a borrow <mat-icon> playlist_add_check</mat-icon>
                 </button>
-    
+
+
             </div>
             <div class="section-r">
-                <h1><b>{{book.title}}</b></h1>
+                <div class="book-title-section">
+                    <h1 style="margin-bottom: 0;"><b>{{book.title}}</b></h1>
+                    <p>{{book.isbn}}</p>
+                </div>
             </div>
         </div>
 
 
         <div class="sections-container">
 
-        <div class="section-l">
+            <div class="section-l">
+                <ng-template [ngIf]="BTRformVisible">
+                    <app-books-to-readers-form [id]="book.id" [MODE]="0" (cancelRequest)="showBTRform($event)">
+                    </app-books-to-readers-form>
+                </ng-template>
 
-        </div>
-
-        <div class="section-r">
-            <h3>Book Details :</h3>
-            <!-- <some icon >{{available}}  -->
-            <div >
-                <p>{{book.description}}</p>
-            </div>
-            <div class="book-details-content">
-                <div class="book-details-col">
-                    <div class="book-details-field">
-                        <p>Pages: </p>
-                        <p><b>{{book.pages}}</b></p>
-                    </div>
-                    <div class="book-details-field">
-                        <p>Chapters: </p>
-                        <p> <b>{{book.chapters}}</b> </p>
-                    </div>
-                    <div class="book-details-field">
-                        <p>Price: </p>
-                        <p><b>{{book.price}}</b></p>
-                    </div>
-
-                </div>
-
-                <div class="book-details-col">
-                    <div class="book-details-field">
-                        <p>Available quantity: </p>
-                        <p><b>{{book.storage.quantity}}</b></p>
-                    </div>
-                    <div class="book-details-field">
-                        <p>BorrowedQuantity: </p>
-                        <p><b>{{book.storage.borrowedQuantity}}</b></p>
-                    </div>
-
-                </div>
-
-
-                
-               
-                
             </div>
 
-            <mat-accordion>
+            <div class="section-r">
+                <h3>Book Details :</h3>
+                <!-- <some icon >{{available}}  -->
+                <div>
+                    <p>{{book.description}}</p>
+                </div>
+                <div class="book-details-container">
+                    <div class="book-details-col">
+                        <div class="book-details-field">
+                            <p>Pages: </p>
+                            <p><b>{{book.pages}}</b></p>
+                        </div>
+                        <div class="book-details-field">
+                            <p>Chapters: </p>
+                            <p> <b>{{book.chapters}}</b> </p>
+                        </div>
+                        <div class="book-details-field">
+                            <p>Price: </p>
+                            <p><b>{{book.price}}</b></p>
+                        </div>
+
+                    </div>
+
+                    <div class="book-details-col">
+                        <div class="book-details-field">
+                            <p>Available quantity: </p>
+                            <p><b>{{book.storage.quantity}}</b></p>
+                        </div>
+                        <div class="book-details-field">
+                            <p>BorrowedQuantity: </p>
+                            <p><b>{{book.storage.borrowedQuantity}}</b></p>
+                        </div>
+
+                    </div>
+                </div>
+
+
                 <ng-container *ngTemplateOutlet="booksToAuthors"></ng-container>
                 <ng-container *ngTemplateOutlet="booksToReaders"></ng-container>
-            </mat-accordion>
-
+            </div>
         </div>
-
-            <!-- 
-                        title
-                        pages
-                        chapters
-                        price
-                        storage{quantity borrowedQuantity}
-                        available
-                        booksToAuthors{id author{id name}}
-                        booksToReaders{ id reader{id name}}
-                     -->
-
-    
-        </div>
-
-
-
     </div>
 </ng-template>
-<!-- 
-    id
-    title
-    pages
-    chapters
-    price
-    storage{id quantity borrowedQuantity}
-    available
-    booksToAuthors{id author{id name}}
-    booksToReaders{ id reader{id name}} -->
+
 
 <ng-template #booksToAuthors>
-    <mat-expansion-panel>
-        <mat-expansion-panel-header>
-            <mat-panel-title>
-                Authors
-            </mat-panel-title>
-            <mat-panel-description>
-                Authors' details
-            </mat-panel-description>
-        </mat-expansion-panel-header>
-        <app-shared-paginated-cards [payload]="authorsCards"></app-shared-paginated-cards>
-    </mat-expansion-panel>
+    <mat-accordion>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Authors
+                </mat-panel-title>
+                <mat-panel-description>
+                    Authors' details
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <ng-container *ngIf="hasAuthors(); then booksToAuthorsCards; else emptyBooksToAuthorsCards"></ng-container>
+        </mat-expansion-panel>
+    </mat-accordion>
 </ng-template>
+
+
+<ng-template #booksToAuthorsCards>
+    <div style="height: 600px;">
+        <app-shared-paginated-cards [payload]="authorsCards"></app-shared-paginated-cards>
+    </div>
+</ng-template>
+
+<ng-template #emptyBooksToAuthorsCards>
+    <div class="empty-expansion-panel">
+        <p> This book does not has any author's info. </p>
+    </div>
+</ng-template>
+
 
 
 
 <ng-template #booksToReaders>
-    <mat-expansion-panel>
-        <mat-expansion-panel-header>
-            <mat-panel-title>
-                Readers
-            </mat-panel-title>
-            <mat-panel-description>
-                List of readers who borrowed this book
-            </mat-panel-description>
-        </mat-expansion-panel-header>
-        <!-- <app-shared-card *ngFor="let reader of filteredReaders" [cardDetails]="reader"></app-shared-card> -->
-        <app-shared-paginated-cards [payload]="readersCards"></app-shared-paginated-cards>
-    </mat-expansion-panel>
+    <mat-accordion>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Readers
+                </mat-panel-title>
+                <mat-panel-description>
+                    List of readers who borrowed this book
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <ng-container *ngIf="hasReaders(); then booksToReadersCards; else emptyBooksToReadersCards"></ng-container>
+        </mat-expansion-panel>
+    </mat-accordion>
 </ng-template>
 
+<ng-template #booksToReadersCards>
+    <div style="height: 670px;">
+        <app-shared-paginated-cards [payload]="readersCards"></app-shared-paginated-cards>
+    </div>
+</ng-template>
+
+<ng-template #emptyBooksToReadersCards>
+    <div class="empty-expansion-panel">
+        <p> This book has not been borrowed yet. </p>
+    </div>
+</ng-template>
 
 
 <ng-template #loadingFailed>
