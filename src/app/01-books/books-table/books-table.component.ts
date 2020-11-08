@@ -138,7 +138,6 @@ export class BooksTableComponent implements OnInit {
       let reducer = (acc, aut) => acc || aut.viewValue.toLowerCase().includes(term)
       return (
         book.title.viewValue.toLowerCase().includes(term) ||
-        book.isbn.viewValue.toLowerCase().includes(term) ||
         (book.authors.arr.reduce(reducer, false))
       );
     }
