@@ -35,7 +35,7 @@ mutation deleteBook($id: String!) {
 
 export const deleteBooksToReadersMut = gql`
 mutation deleteBooksToReaders($id: String!) {
-  deleteBooksToReaders(where: { id: $id }) {
+  deletedBtr:deleteBooksToReaders(where: { id: $id }) {
     id
   }
 }
