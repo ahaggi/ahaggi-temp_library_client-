@@ -9,8 +9,9 @@ import { split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities';
 import { OperationDefinitionNode } from 'graphql/language/ast';
 
-const uriHttp = 'http://localhost:4021/graphql'; // <-- add the URL of the GraphQL server here
-const uriWs = 'ws://localhost:4021/graphql'; // <-- add the URL of the GraphQL server here
+
+const uriHttp = 'https://temp-library-server.herokuapp.com/graphql'; // <-- add the URL of the GraphQL server here
+const uriWs = 'wss://temp-library-server.herokuapp.com/graphql'; // <-- add the URL of the GraphQL server here
 
 export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
 
