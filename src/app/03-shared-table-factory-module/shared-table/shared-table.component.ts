@@ -56,8 +56,11 @@ export class SharedTableComponent<T> implements AfterViewInit, OnInit {
         return cell.viewValue
       } else if (cell._kind === sharedTableCellKind.INDEX) {
         return this.dataSource.filteredData.indexOf(row)
+      } else if (cell._kind === sharedTableCellKind.ICON) {
+        return cell.materialIconName
       }
 
+      
       // if cell._kind is one of:
       // sharedTableCellKind.BUTTON
       // sharedTableCellKind.CHIP_LIST
