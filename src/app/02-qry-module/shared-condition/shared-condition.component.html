@@ -1,0 +1,57 @@
+<div class="container" [formGroup]="formGroup">
+    <span>{{field?.viewValue}}</span>
+
+    <div class="condition-container" [ngClass]="{'shared-input':field.inputValueType !== InputValueType.BOOLEAN}">
+
+        <mat-form-field appearance="fill" style="width: 75px;">
+            <mat-select (selectionChange)="onChangeCondition()" [(value)]="selectedCondition">
+                <mat-select-trigger>{{symbols[selectedCondition]}}</mat-select-trigger>
+                <mat-option *ngFor="let elm of conditionOptions" [value]="elm.condition">
+                    {{elm.viewValue}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+
+        <div *ngFor="let fcn of Object.keys(this.formGroup.controls)">
+            <ng-container [ngSwitch]="true">
+
+
+                <div *ngSwitchCase="showInputList()">
+                    <ng-container [ngSwitch]="field.inputValueType">
+                        <div *ngSwitchCase="InputValueType.DATE">
+                            <app-shared-input-date-list [formControlName]="fcn" [field]="field" [condition]="fcn">
+                            </app-shared-input-date-list>
+                        </div>
+                        <div *ngSwitchDefault>
+                            <app-qry-shared-input-list [formControlName]="fcn" [field]="field">
+                            </app-qry-shared-input-list>
+                        </div>
+                    </ng-container>
+                </div>
+
+
+                <div *ngSwitchCase="showInput()">
+                    <ng-container [ngSwitch]="field.inputValueType">
+                        <div *ngSwitchCase="InputValueType.BOOLEAN">
+                            <app-shared-input-boolean [formControlName]="fcn" [field]="field">
+                            </app-shared-input-boolean>
+                        </div>
+                        <div *ngSwitchCase="InputValueType.DATE">
+                            <app-shared-input-date [formControlName]="fcn" [field]="field" [condition]="fcn">
+                            </app-shared-input-date>
+                        </div>
+                        <div *ngSwitchDefault>
+                            <app-qry-shared-input [formControlName]="fcn" [field]="field"></app-qry-shared-input>
+                        </div>
+                    </ng-container>
+                </div>
+
+
+                <div *ngSwitchDefault> </div>
+            </ng-container>
+        </div>
+
+    </div>
+
+</div>

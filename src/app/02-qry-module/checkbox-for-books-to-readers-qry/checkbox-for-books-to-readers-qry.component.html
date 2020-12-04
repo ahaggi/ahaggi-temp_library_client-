@@ -1,0 +1,30 @@
+<div class="container">
+    <ul class="fields-options fields-options-container">
+
+        <li class="field-checkbox-container" *ngFor="let field of fieldsOptions">
+            <mat-checkbox (change)="check($event.checked , field.value)">
+                {{field.viewValue}} :
+            </mat-checkbox>
+
+        </li>
+
+
+    </ul>
+
+    <ul class="fields-options nested-fields-options-container">
+        <li class="field-checkbox-container" *ngFor="let field of nestedFieldsOptions">
+            <mat-checkbox (change)="showNestedComponent($event.checked , field.value)">
+                {{field.viewValue}} :
+            </mat-checkbox>
+            <div *ngIf="showBOOKasNestedFieldOption && field.value == NestedGqlObjectsInBTR.BOOK">
+                <app-qry-checkbox-for-book-qry [nestedIn]="NestedgqlObject.BOOKSTOREADERS">
+                </app-qry-checkbox-for-book-qry>
+            </div>
+            <div *ngIf="showREADERasNestedFieldOption && field.value == NestedGqlObjectsInBTR.READER">
+                <app-qry-checkbox-for-reader-qry [nestedIn]="NestedgqlObject.BOOKSTOREADERS">
+                </app-qry-checkbox-for-reader-qry>
+            </div>
+        </li>
+    </ul>
+
+</div>

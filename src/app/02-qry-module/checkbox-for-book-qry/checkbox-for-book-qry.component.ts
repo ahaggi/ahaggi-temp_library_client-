@@ -1,0 +1,117 @@
+import { Component, Input, OnInit } from '@angular/core';
+import { NodeStructService } from '../form/node-struct.service';
+import { NestedgqlObject } from '../query-options/query-options.component';
+
+@Component({
+  selector: 'app-qry-checkbox-for-book-qry',
+  templateUrl: './checkbox-for-book-qry.component.html',
+  styleUrls: ['./checkbox-for-book-qry.component.css']
+})
+export class CheckboxForBookQryComponent implements OnInit {
+
+
+
+  fieldsOptions: any[];
+  selectedFieldValueTracker: any[];
+  nestedFieldsOptions: any[];
+
+  showAuthorAsNestedFieldOption: boolean = false; // refer to weather author component is nested inside this conmponent or not
+  showBTRasNestedFieldOption: boolean = false; // refer to weather booksToReaders component is nested inside this conmponent or not
+
+  @Input()
+  nestedIn: NestedgqlObject; // refer to weather this component is nested inside another conmponent or not
+
+
+  constructor(private nodeStructService: NodeStructService) { }
+
+  ngOnInit(): void {
+
+    let prefix = '';
+    switch (this.nestedIn) {
+      case NestedgqlObject.AUTHOR:
+        prefix = 'author.booksToAuthors.some.book';
+        this.nestedFieldsOptions = [
+          { viewValue: "Borrowing Details", value: NestedGqlObjectsInBook.BOOKSTOREADERS },
+        ]
+        break;
+
+      case NestedgqlObject.BOOKSTOREADERS:
+        prefix = 'reader.booksToReaders.some.book';
+        this.nestedFieldsOptions = [
+          { viewValue: "Authors' Details", value: NestedGqlObjectsInBook.AUTHOR },
+        ]
+        break;
+
+      case NestedgqlObject.NONE:
+        prefix = 'book';
+        this.nestedFieldsOptions = [
+          { viewValue: "Authors' Details", value: NestedGqlObjectsInBook.AUTHOR },
+          { viewValue: "Borrowing Details", value: NestedGqlObjectsInBook.BOOKSTOREADERS },
+        ]
+        break;
+
+      default:
+        prefix = 'book';
+        this.nestedFieldsOptions = []
+
+        break;
+    }
+
+    this.fieldsOptions = [
+      { viewValue: "Title", value: prefix + "." + "title" },
+      { viewValue: "ISBN", value: prefix + "." + "isbn" },
+      { viewValue: "Pages", value: prefix + "." + "pages" },
+      { viewValue: "Chapters", value: prefix + "." + "chapters" },
+      { viewValue: "Price", value: prefix + "." + "price" },
+      { viewValue: "Description", value: prefix + "." + "description" },
+      // { viewValue: "Available", value: prefix + "." + "available" },
+      { viewValue: "Quantity", value: prefix + "." + "storage.quantity" },
+      { viewValue: "Borrowed", value: prefix + "." + "storage.borrowedQuantity" },
+    ]
+
+    // For explaination of the use case where "selectedFieldValueTracker" is needed, read the comment inside ngOnDestroy
+    this.selectedFieldValueTracker = []
+  }
+
+  check(bool, value) {
+    // For explaination of the use case where "selectedFieldValueTracker" is needed, read the comment inside ngOnDestroy
+    if (bool) {
+      this.nodeStructService.EmitAddNodesEvent(value)
+      this.selectedFieldValueTracker.push(value)
+    } else {
+      let _ind = this.selectedFieldValueTracker.indexOf(value);
+      if (_ind >= 0) {
+        this.nodeStructService.EmitRemoveNodesEvent(value)
+        this.selectedFieldValueTracker.splice(_ind, 1)
+      }
+    }
+  }
+
+
+
+  showNestedComponent(bool, value: NestedGqlObjectsInBook) {
+    if (value === NestedGqlObjectsInBook.AUTHOR) {
+      this.showAuthorAsNestedFieldOption = bool
+    } else if (value === NestedGqlObjectsInBook.BOOKSTOREADERS) {
+      this.showBTRasNestedFieldOption = bool
+    }
+  }
+
+
+  NestedgqlObject: typeof NestedgqlObject = NestedgqlObject
+  NestedGqlObjectsInBook: typeof NestedGqlObjectsInBook = NestedGqlObjectsInBook
+  ngOnDestroy(): void {
+    // In case where this component is nested inside another one (let us call it "hostComponent") AND the 
+    // hostComponent.nestedFieldsOptions.thisComponent is been unselected, then we need to remove all the 
+    // fields related to this component from the QryForm.component.
+
+    this.selectedFieldValueTracker.forEach(value => this.check(false, value))
+  }
+
+}
+
+// this enum will be used just inside this component
+enum NestedGqlObjectsInBook {
+  AUTHOR = 'AUTHOR',
+  BOOKSTOREADERS = 'BOOKSTOREADERS',
+}

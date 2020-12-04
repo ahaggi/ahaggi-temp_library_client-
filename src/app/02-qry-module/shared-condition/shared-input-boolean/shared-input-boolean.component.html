@@ -1,0 +1,16 @@
+<div>
+    <mat-button-toggle-group #group="matButtonToggleGroup" [formControl]="termController">
+        <!-- [value]="termController.value" -->
+        <mat-button-toggle [value]="true" aria-label="Text align left">
+            True
+        </mat-button-toggle>
+        <mat-button-toggle [value]="false" aria-label="Text align center">
+            False
+        </mat-button-toggle>
+    </mat-button-toggle-group>
+    
+    <mat-error *ngIf="termController.hasError('required')">
+        Please enter a value or uncheck this field.
+    </mat-error>
+
+</div>

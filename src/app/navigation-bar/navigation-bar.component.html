@@ -1,0 +1,45 @@
+<div class="container">
+  <mat-toolbar color="primary">
+
+    <button mat-flat-button color="primary" style="font-size: 1.5rem"  [routerLink]="['/dashboard']">
+      <mat-icon>account_balance</mat-icon>
+      <span *ngIf="!(isHandset$ | async)">
+        Library</span>
+    </button>
+
+    <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
+      *ngIf="isHandset$ | async">
+      <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="sidenav-container" >
+
+    <mat-sidenav #drawer class="sidenav" [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="(isHandset$ | async) === false" fixedInViewport="false" >
+      <mat-nav-list>
+        <a mat-list-item [routerLink]="['/dashboard']">Dashboard</a>
+        <a mat-list-item [routerLink]="['/books']">Books</a>
+        <a mat-list-item [routerLink]="['/authors']">Authors</a>
+        <a mat-list-item [routerLink]="['/readers']">Readers</a>
+        <a mat-list-item [routerLink]="['/addbook']">bookForm </a>
+        <a mat-list-item [routerLink]="['/addauthor']">authorForm </a>
+        <a mat-list-item [routerLink]="['/addreader']">readerForm </a>
+        <a mat-list-item [routerLink]="['/book', 1]">book/1 </a>
+        <a mat-list-item [routerLink]="['/author', 1]">author/1 </a>
+        <a mat-list-item [routerLink]="['/reader', 1]">reader/1 </a>
+        <a mat-list-item [routerLink]="['/qry']">Queries </a>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+
+
+
+      <!-- Add Content Here -->
+      <router-outlet></router-outlet>
+
+
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+
+</div>

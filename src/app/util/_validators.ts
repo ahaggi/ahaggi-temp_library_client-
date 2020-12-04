@@ -3,7 +3,7 @@ import { debounceTime, delay, distinctUntilChanged, first, map, switchMap, take,
 import { Observable, of } from 'rxjs';
 
 import { Apollo } from 'apollo-angular';
-import { getAuthorByEmailQry } from './queriesDef';
+import { getAuthorByEmailQry } from './gqlUtil/queriesDef';
 import { query } from '@angular/animations';
 import { DocumentNode } from 'graphql';
 

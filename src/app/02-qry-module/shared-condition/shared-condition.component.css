@@ -1,0 +1,10 @@
+.condition-container{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+}
+
+
+.shared-input{
+    align-items:baseline;
+}

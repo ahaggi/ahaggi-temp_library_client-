@@ -1,28 +1,5 @@
 
 /**
- * 
- * npm i express path --save
-
- * create this file server.js
-
- * Modify package.json
-      "scripts": {
-        "start": "node server.js",
-        .. ,
-        "heroku-postbuild": "ng build --aot --prod"
-      }
-
- * ng build
-
- * push to github
-
- * Heruko:
-      -create new app
-      -inside "deploy" ==> "Deployment method" choose "connect to github"
-      - Optionaly choose which github barnch to connect to 
-
- * 
- * 
-
- */
+Added universal query components
+*/
 

@@ -1,0 +1,19 @@
+.input-fields-container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 20px 0px;
+}
+.input-fields{
+    flex-basis: 50%;
+    min-width: 250px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.submit-button{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding-right: 100px;
+}

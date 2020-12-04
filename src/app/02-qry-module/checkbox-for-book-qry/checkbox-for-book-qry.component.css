@@ -1,0 +1,20 @@
+
+.container .fields-options {
+  list-style-type: none;
+  display: flex;
+  margin: 0;
+}
+.fields-options-container{
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.nested-fields-options-container{
+  flex-direction: column;
+}
+
+.fields-options .field-checkbox-container{
+  width:30% ;
+  min-width: 200px;
+}
+

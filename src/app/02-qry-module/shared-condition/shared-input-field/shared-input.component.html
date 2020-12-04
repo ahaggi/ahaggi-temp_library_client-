@@ -1,0 +1,21 @@
+<div class="container">
+        <mat-form-field appearance="fill">
+            <mat-label>{{field.viewValue}}</mat-label>
+            <input matInput type="text" [formControl]="termController">
+
+            <mat-error *ngIf="termController.hasError('required')">
+                Please enter a value or uncheck this field.
+            </mat-error>
+
+            <mat-error *ngIf="termController.hasError('pattern')" [ngSwitch]="field.inputValueType">
+                <p *ngSwitchCase="InputValueType.INT">Invalid value, this field has to be an integer number without
+                    space.
+                </p>
+                <p *ngSwitchCase="InputValueType.FLOAT">Invalid value for a number without space.</p>
+                <p *ngSwitchCase="InputValueType.PHONE">Invalid value for a phone number without space.</p>
+                <p *ngSwitchDefault ></p>
+        </mat-error>
+        </mat-form-field>
+</div>
+
+<!-- <pre>the shared-input termController {{termController.value | json}}</pre> -->

@@ -1,0 +1,28 @@
+
+<div >
+  <form [formGroup]="formGroup" (ngSubmit)="submit()">
+
+    <div class="input-fields-container">
+      <div class="input-fields" *ngFor="let field of fieldsToShow ; trackBy:identify">
+  
+        <ng-template [ngIf]="field.parentsFormGroupNameList.length > 0" [ngIfElse]="WithoutParentsFormGroupNameList">
+          <div [formGroup]="getParentNodeFormGroup(field.parentsFormGroupNameList)">
+            <app-qry-shared-condition [fieldkey]="field.path" [formControlName]="field.nodeFormGroupName">
+            </app-qry-shared-condition>
+          </div>
+        </ng-template>
+    
+        <ng-template #WithoutParentsFormGroupNameList>
+          <app-qry-shared-condition [fieldkey]="field.path" [formControlName]="field.nodeFormGroupName"> </app-qry-shared-condition>
+        </ng-template>
+      </div>
+    </div>
+  
+    <div class="submit-button">
+      <button *ngIf="formHasControllers()" mat-raised-button color="primary" type="submit" [disabled]="formGroup.invalid" >
+        Submit</button>
+  
+    </div>
+    </form>
+</div>
+

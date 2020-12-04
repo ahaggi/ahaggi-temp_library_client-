@@ -1,0 +1,38 @@
+
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+.notifications{
+    flex-grow: 1;
+}
+
+
+p {white-space: pre-line}
+
+.created-class{
+    background: rgb(162, 192, 255);
+}
+
+.created-class:hover{
+    background: rgb(99, 148, 255);
+}
+
+.updated-class{
+    background: rgb(255, 253, 162);
+}
+
+.updated-class:hover{
+    background: rgb(245, 255, 99);
+}
+
+.deleted-class{
+    background: rgb(255, 162, 162);
+}
+
+.deleted-class:hover{
+    background: rgb(255, 0, 0);
+}
+
+

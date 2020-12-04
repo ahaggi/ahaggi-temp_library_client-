@@ -1,0 +1,30 @@
+<mat-form-field appearance="fill">
+    <mat-label>{{field.viewValue}}</mat-label>
+
+    <mat-chip-list #chipList>
+        <mat-chip *ngFor="let term of terms" removable="true" (removed)="remove(term)">
+            {{term}}
+            <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip>
+        <input placeholder="New sdfsdf..." [matChipInputFor]="chipList" matInput
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes" matChipInputAddOnBlur="true"
+            (matChipInputTokenEnd)="add($event)" [formControl]="termController" [errorStateMatcher]="errorMatcher" >
+    </mat-chip-list>
+
+    <mat-error *ngIf="termController.hasError('__required')">
+        Please enter a value or uncheck this field.
+    </mat-error>
+    <mat-error *ngIf="termController.hasError('pattern')" [ngSwitch]="true">
+
+        <p *ngSwitchCase="['equals','in','notIn','lt','lte','gt','gte'].includes(condition)" >Invalid value for a date, a valid value is in form of 'dd*MM*yyyy' without space, where * is one of (/ , - , .)</p>
+
+        <p *ngSwitchCase="condition === 'contains' " >Invalid value for a date, a valid value is in form of 'dd*MM*yyyy', '*dd*MM', '*MM*yyyy', '*yyyy' , '*MM*' or 'dd*' without space, where * is one of (/ , - , .)</p>
+        
+        <!-- <p *ngSwitchCase="condition === 'startsWith' " >Invalid value for a date, a valid value is in form of 'dd*MM*yyyy', '*dd*MM', or 'dd*' without space, where * is one of (/ , - , .)</p> -->
+
+        <!-- <p *ngSwitchCase="condition === 'endsWith' " >Invalid value for a date, a valid value is in form of 'dd*MM*yyyy', '*MM*yyyy', or '*yyyy' without space, where * is one of (/ , - , .)</p> -->
+
+        <p *ngSwitchDefault ></p>
+    </mat-error>
+
+</mat-form-field>

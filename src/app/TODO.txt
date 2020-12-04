@@ -1,7 +1,12 @@
+const _ReaderWhereUniqueInput = inputObjectType({
+    name: "_ReaderWhereUniqueInput",
+    definition(t) {
+        t.string("id")
+        t.string("email")
+                            t.string("phone")
+    }
+});
 
-Test if the cache save the same query twice if they have diff fields' order in thier resp?
-
-fix the height of cards in book and authors component.
 
 update after mutation:
   updating-after-a-mutation
@@ -21,11 +26,7 @@ Read
 
 
 
-
 fix ==>  style un-returned book at http://localhost:4211/book
-
-add autocomplete="off" at all <input .. where it is necessary ,,, take a look at shared-filtered-select.component.html
-
 
 create universal filterPlaceHolder!!
 
@@ -47,12 +48,7 @@ try soft delete booksToReaders?
 
 // imgUri: [''], imageUri controller to emulate image's change functionality
 
-"sadf sadf": AuthorComponent ==> getAuthor(){ .. this.author.books = { .. subtitle: "sadf sadf" ..}}; change subtitle to be co-authors?
-
-check that all sub are unsub in ngDestroy
-
 routerlink to be routerlink ["something" , "something"] instead of ["something/${id}"]
-
 
 add this.isLoadingFailed To:
                     BookComponent
@@ -60,24 +56,7 @@ add this.isLoadingFailed To:
                     AuthorComponent
 
 
-
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = form && form.submitted;
-    console.log(`(control && control.invalid ${control.invalid} && (control.dirty ${control.dirty} || control.touched ${control.touched} || (isSubmitted ${isSubmitted} && !form.pristine ${!form.pristine})))`)
-    let a = !!(control && control.invalid && (control.dirty || control.touched || (isSubmitted && !form.pristine)))
-    return a;
-  }
-}
-
-
-
-
-
-
-
-
-
+Handling Apollo Errs
       .pipe(
       // you can also merge loading assignment into map        
       tap(result => this.isLoading = result.loading),

@@ -148,16 +148,13 @@ Updating the Store after a mutation
               });
 
               // 2- mutate the data
-              dataFromStore.books = [...dataFromStore.books , createdBook ]
+              const temp = [...dataFromStore.books, createdBook]
 
               // 3- update the cache with the updated data
-              store.writeQuery({
-                query: getBooksQry,
-                dataFromStore
-              })
+              store.writeQuery({ query: getBooksQry, data: { books: temp } });
             }
     2- refetchQueries
-        Take a look at "book-form.component.ts" postBook(_) function
+        Take a look at  "author-form.component.ts" postAuthor(_) function
 
 
 ------------------------------------------------------------

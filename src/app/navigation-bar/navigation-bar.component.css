@@ -1,0 +1,23 @@
+.container{
+  min-height: 80vh;
+  /* background-color: rebeccapurple; */
+}
+.sidenav-container {
+  min-height: 80vh;
+  /* background-color: red; */
+
+}
+
+.sidenav {
+  width: 200px;
+}
+
+.sidenav .mat-toolbar {
+  background: inherit;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
